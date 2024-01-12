@@ -1,5 +1,8 @@
 # ele
-`pip install -e .` # install as module using pip
+
+> `pip install -e .` # install as module using pip
+
+> python setup.py develop (adds 'ele', 'ele_source', and 'ele_main' to $PATH)
 
 ### ipc protocol
 > Single bytes are small but can represent different things depending on how we interpret them.

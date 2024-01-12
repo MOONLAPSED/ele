@@ -28,12 +28,14 @@ class Attribute(Element):
 
     @validator('data_type')
     def validate_data_type(cls, v):
-        allowed_types = {"TEXT", "INTEGER", "REAL", "BLOB", "VARCHAR"}
+        allowed_types = {"TEXT", "INTEGER", "REAL", "BLOB", "VARCHAR", "BYTES"}
         if v not in allowed_types:
             raise ValueError(f"Invalid data type: {v}")
         return v
 
 class DataType(Attribute):
+    def __repr__(self) -> str:
+        return super().__repr__()
     pass
 
 class TEXT(DataType):
@@ -45,10 +47,14 @@ class INTEGER(DataType):
 class REAL(DataType):
     name: str
 
-class BLOB(DataType):
+class BLOB(DataType):  # BLOBs are always a whole ele.sql table entry each 
     name: str
 
 class VARCHAR(DataType):
+    name: str
+    length: int
+
+class BYTES(DataType):  # ASCII BYTES objects
     name: str
     length: int
 
@@ -87,6 +93,6 @@ class MySettings(BaseModel):
         return self.logger
 
 if __name__ == "__main__":
-    load_dotenv()  # Move this line here to ensure environment variables are loaded before creating MySettings instance
+    load_dotenv()
     settings = MySettings()
     settings.logger()
