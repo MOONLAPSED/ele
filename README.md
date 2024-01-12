@@ -22,6 +22,48 @@
 
 So in summary, bytes objects let us work with network data exactly as it is transmitted - as raw individual bytes that higher level protocols and code can interpret meaningfully. 
 
+#### tinyframe schema
+
+```
+Header (1 byte):
+
+Only 2 possible values:
+0x01 = Request frame
+0x02 = Response frame
+This byte identifies the frame type at the beginning
+Requests use 0x01, Responses use 0x02
+Only these 2 values are allowed to clearly delimit the frame type
+Length (1 byte):
+
+Stores the number of bytes in the Payload field as a single byte (range 0-255)
+Length can vary between frames but is limited to 255 bytes max
+Reader knows how many Payload bytes to expect based on this field
+Payload:
+
+Format varies based on frame Header type (Request vs Response)
+Request Payload:
+
+Command (1 byte):
+Possible commands 0x01, 0x02, etc (values TBD)
+Identifies the action/operation the Request represents
+Args (optional bytes):
+Additional data for the specific Command
+Only included if relevant to that Command
+Response Payload:
+
+Status (1 byte):
+Success/Error codes 0x00, 0x01, 0x02 (custom values can be set)
+Indicates result of processing the corresponding Request
+Data (optional bytes):
+Only included for successful Responses
+Contains any data returned for the Request
+Footer (1 byte):
+
+Matches Header byte to clearly mark frame boundary
+0x01 for Request, 0x02 for Response
+```
+
+
 ### broker subarchitecture
 A data broker typically uses a publish-subscribe model to facilitate one-to-many asynchronous data where:
 
@@ -39,6 +81,21 @@ A data broker typically uses a publish-subscribe model to facilitate one-to-many
 
 Protocols differ because they enable direct two-way data exchange between known endpoints. The kernel and Python runtime would use a protocol for synchronous request-response style IPC. A broker could later subscribe to their requests/responses for additional distribution/persistence.
 
+### monitoring, error-checking
+> Define a protocol specifying the byte-level serialization format
+> Broker function on Python side packs data into bytes per protocol
+> Kernel function unpacks bytes back into native data types
+> Async I/O via select()/pipe for non-blocking transfer
+> Logging utils see raw bytes for protocol verification
+
+
+### ele-sql
+
+The binary encoding standard such that bytes can be cat together chronologically (either real time, or 'fake' t=time) to form a single BLOB.
+
+> Individual cells are BLOBs which are cat together chronologically to form a single UFX object which is like a superposition of UFS objects, BYTES, states, and NLP vector embeddings
+
+> CELLs automatically (tick-based chrono-queue which ensures chrono-ordering) write to the sql db, until the end of the db is reached at which point the next CELL overwrites the zeroth and continues rewriting from there.
 
 ``` # 't' is a timestamp-type of .ufs object which is a 32-bit integer cat onto the frame of the BLOB
 <runtime operations>
