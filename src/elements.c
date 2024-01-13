@@ -2115,7 +2115,7 @@ static const char __pyx_k_Frame___reduce_cython[] = "Frame.__reduce_cython__";
 static const char __pyx_k_Frame___setstate_cython[] = "Frame.__setstate_cython__";
 static const char __pyx_k_no_default___reduce___due_to_non[] = "no default __reduce__ due to non-trivial __cinit__";
 /* #### Code section: decls ### */
-static int __pyx_pf_3src_8elements_5Frame___cinit__(struct __pyx_obj_3src_8elements_Frame *__pyx_v_self, unsigned char __pyx_v_header, PyObject *__pyx_v_payload); /* proto */
+static int __pyx_pf_3src_8elements_5Frame___cinit__(CYTHON_UNUSED struct __pyx_obj_3src_8elements_Frame *__pyx_v_self, unsigned char __pyx_v_header, PyObject *__pyx_v_payload); /* proto */
 static PyObject *__pyx_pf_3src_8elements_5Frame_2__reduce_cython__(CYTHON_UNUSED struct __pyx_obj_3src_8elements_Frame *__pyx_v_self); /* proto */
 static PyObject *__pyx_pf_3src_8elements_5Frame_4__setstate_cython__(CYTHON_UNUSED struct __pyx_obj_3src_8elements_Frame *__pyx_v_self, CYTHON_UNUSED PyObject *__pyx_v___pyx_state); /* proto */
 static PyObject *__pyx_tp_new_3src_8elements_Frame(PyTypeObject *t, PyObject *a, PyObject *k); /*proto*/
@@ -2382,8 +2382,8 @@ static int __pyx_m_traverse(PyObject *m, visitproc visit, void *arg) {
  *     cdef bytes payload
  * 
  *     def __cinit__(self, unsigned char header, bytes payload):             # <<<<<<<<<<<<<<
- *         self.header = header
- *         self.payload = payload
+ *         # Corrected assignment without using self.
+ *         header = header
  */
 
 /* Python wrapper */
@@ -2485,54 +2485,43 @@ static int __pyx_pw_3src_8elements_5Frame_1__cinit__(PyObject *__pyx_v_self, PyO
   return __pyx_r;
 }
 
-static int __pyx_pf_3src_8elements_5Frame___cinit__(struct __pyx_obj_3src_8elements_Frame *__pyx_v_self, unsigned char __pyx_v_header, PyObject *__pyx_v_payload) {
+static int __pyx_pf_3src_8elements_5Frame___cinit__(CYTHON_UNUSED struct __pyx_obj_3src_8elements_Frame *__pyx_v_self, unsigned char __pyx_v_header, PyObject *__pyx_v_payload) {
   int __pyx_r;
   __Pyx_RefNannyDeclarations
   char *__pyx_t_1;
   int __pyx_lineno = 0;
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
-  __Pyx_RefNannySetupContext("__cinit__", 1);
+  __Pyx_RefNannySetupContext("__cinit__", 0);
+  __Pyx_INCREF(__pyx_v_payload);
 
-  /* "src/elements.pyx":14
- * 
- *     def __cinit__(self, unsigned char header, bytes payload):
- *         self.header = header             # <<<<<<<<<<<<<<
- *         self.payload = payload
- *         printf("Frame initialized with header %d and payload %s\n", header, payload)
- */
-  __pyx_v_self->header = __pyx_v_header;
-
-  /* "src/elements.pyx":15
- *     def __cinit__(self, unsigned char header, bytes payload):
- *         self.header = header
- *         self.payload = payload             # <<<<<<<<<<<<<<
+  /* "src/elements.pyx":16
+ *         # Corrected assignment without using self.
+ *         header = header
+ *         payload = payload             # <<<<<<<<<<<<<<
  *         printf("Frame initialized with header %d and payload %s\n", header, payload)
  */
   __Pyx_INCREF(__pyx_v_payload);
-  __Pyx_GIVEREF(__pyx_v_payload);
-  __Pyx_GOTREF(__pyx_v_self->payload);
-  __Pyx_DECREF(__pyx_v_self->payload);
-  __pyx_v_self->payload = __pyx_v_payload;
+  __Pyx_DECREF_SET(__pyx_v_payload, __pyx_v_payload);
 
-  /* "src/elements.pyx":16
- *         self.header = header
- *         self.payload = payload
+  /* "src/elements.pyx":17
+ *         header = header
+ *         payload = payload
  *         printf("Frame initialized with header %d and payload %s\n", header, payload)             # <<<<<<<<<<<<<<
  */
   if (unlikely(__pyx_v_payload == Py_None)) {
     PyErr_SetString(PyExc_TypeError, "expected bytes, NoneType found");
-    __PYX_ERR(1, 16, __pyx_L1_error)
+    __PYX_ERR(1, 17, __pyx_L1_error)
   }
-  __pyx_t_1 = __Pyx_PyBytes_AsWritableString(__pyx_v_payload); if (unlikely((!__pyx_t_1) && PyErr_Occurred())) __PYX_ERR(1, 16, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyBytes_AsWritableString(__pyx_v_payload); if (unlikely((!__pyx_t_1) && PyErr_Occurred())) __PYX_ERR(1, 17, __pyx_L1_error)
   (void)(printf(((char const *)"Frame initialized with header %d and payload %s\n"), __pyx_v_header, __pyx_t_1));
 
   /* "src/elements.pyx":13
  *     cdef bytes payload
  * 
  *     def __cinit__(self, unsigned char header, bytes payload):             # <<<<<<<<<<<<<<
- *         self.header = header
- *         self.payload = payload
+ *         # Corrected assignment without using self.
+ *         header = header
  */
 
   /* function exit code */
@@ -2542,6 +2531,7 @@ static int __pyx_pf_3src_8elements_5Frame___cinit__(struct __pyx_obj_3src_8eleme
   __Pyx_AddTraceback("src.elements.Frame.__cinit__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = -1;
   __pyx_L0:;
+  __Pyx_XDECREF(__pyx_v_payload);
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }

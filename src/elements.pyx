@@ -11,6 +11,7 @@ cdef class Frame:
     cdef bytes payload
 
     def __cinit__(self, unsigned char header, bytes payload):
-        self.header = header
-        self.payload = payload
+        # Corrected assignment without using self.
+        header = header
+        payload = payload
         printf("Frame initialized with header %d and payload %s\n", header, payload)
