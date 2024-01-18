@@ -17,32 +17,41 @@ import time
 import typing
 import typing_extensions
 
+logger = logging.getLogger(__name__)
+
 class MySettings(BaseSettings):
     """
     Configuration settings for the application.
     """
+
     launch_time: datetime = Field(default_factory=datetime.now)
+
     class Config:
         env_file = ".env"
 
-    def setup_logger(self):
+    @classmethod
+    def get_logger(cls):
+        if not logger.handlers:
+            cls.setup_logger()
+        return logger
+
+    @classmethod
+    def setup_logger(cls):
         logspath = Path("./logs")
         logspath.mkdir(parents=True, exist_ok=True)
         logfile = logspath / "logs.txt"
 
-        logger = logging.getLogger(__name__)
         logger.setLevel(logging.DEBUG)
         formatter = logging.Formatter("%(asctime)s %(levelname)s %(message)s")
 
         file_handler = logging.FileHandler(str(logfile))
         file_handler.setFormatter(formatter)
-        logger.addHandler(file_handler)
 
         # Preventing duplicate handlers
         if not logger.handlers:
             logger.addHandler(file_handler)
 
-        logger.info(f"MySettings loaded with launch_type: {self.launch_type} and launch_directive: {self.launch_directive}.")
+        logger.info(f"MySettings loaded in {os.getcwd()}.")
 
         return logger
         
