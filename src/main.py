@@ -1,23 +1,34 @@
-from datetime import datetime, date
-from dotenv import load_dotenv
-import logging
-import matplotlib.pyplot as plt
-import numpy as np
-import os
-import pandas as pd
-import pathlib
-from pydantic import BaseModel, Field, validator, ConstrainedList as cl
-import re
-import requests
-import select
-import signal
-import subprocess
-import sys
-import time
-import typing
-import typing_extensions
+#!/usr/bin/env python
+#============ELEMENT.main.py_MIT_license_2024================#
+# 1. imports + HOWTO: docstrings + Global logger = logger    #
+# 2. Element + Attribute + Entity abstract classes           #
+# 3. FileTypeSelector + FileHandlerInterface                 #
+# 4. main() and if __name__ funcs                            #
+##############################################################
 
-logger = logging.getLogger(__name__)
+from abc import ABC, abstractmethod
+from datetime import datetime
+from dataclasses import dataclass, field, validator
+from dotenv import load_dotenv
+from io import BytesIO
+from pathlib import Path
+from threading import Thread, Timer, Event, current_thread
+from typing import Callable, Any, Optional, List, Dict, Tuple, Union, Set, Iterable, Iterator, TypeVar, Generic, Type, cast, overload
+
+# HOWTO: docstrings
+"""Short one line summary
+(optional)Extended description of the class/function/method.
+
+Args:
+    arg1 (int): Description of arg1
+    arg2 (str): Description of arg2
+Returns:
+    bool: Description of return value
+(optional)Raises:"""
+
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)  # Global logger
+
 
 class MySettings(BaseSettings):
     """
@@ -54,82 +65,71 @@ class MySettings(BaseSettings):
         logger.info(f"MySettings loaded in {os.getcwd()}.")
 
         return logger
-        
-class Element(BaseModel):
-    name: str
-    description: str
+
+class Element(ABC):
+    def __init__(self, name: str, description: str):
+        self.name = name
+        self.description = description
 
 class Attribute(Element):
-    name: str
-    data_type: str
+    ALLOWED_TYPES = {"TEXT", "INTEGER", "REAL", "BLOB", "VARCHAR", "BOOLEAN", "UFS", "VECTOR", "TIMESTAMP", "EMBEDDING"}
 
-    @validator('data_type')
-    def validate_data_type(cls, v):
-        allowed_types = {"TEXT", "INTEGER", "REAL", "BLOB", "VARCHAR", "BYTES"}
-        if v not in allowed_types:
-            raise ValueError(f"Invalid data type: {v}")
-        return v
+    def __init__(self, name: str, description: str, data_type: str):
+        super().__init__(name, description)
+        if data_type not in self.ALLOWED_TYPES:
+            raise ValueError(f"Invalid data type: {data_type}")
+        self.data_type = data_type
+    """Attribute inherits from Element and adds a data_type argument that must be one of the allowed types.
+    
+    Args:
+        name (str): name of the attribute
+        description (str): description of the attribute
+        data_type (str): data type of the attribute
+    Returns:
+        None
+    """
 
-class DataType(Attribute):
-    def __repr__(self) -> str:
-        return super().__repr__()
-    pass
+class Entity(Element):
+    def __init__(self, name: str, description: str, elements: List[Element] = None):
+        super().__init__(name, description)
+        self.elements = elements if elements is not None else []
+    """Entity inherits from Element, containing a list of Element instances.
+    This allows Entity objects to contain Attribute objects and any other objects that are subclasses of Element.
+    
+    Args:
+        name (str): name of the entity
+        description (str): description of the entity
+        elements (List[Element], optional): list of elements. Defaults to None.
+    Returns:
+        None
+    """
+class UnixFilesystem(Entity):
+    def __init__(self, name: str, description: str, elements: List[Element], inode: int, pathname: str, filetype: str,
+                 permissions: str, owner: str, group_id: int, PID: int, unit_file: str, unit_file_addr: str,
+                 size: int, mtime: str, atime: str):
+        super().__init__(name, description, elements)
+        self.inode = inode
+        self.pathname = pathname
+        self.filetype = filetype
+        self.permissions = permissions
+        self.owner = owner
+        self.group_id = group_id
+        self.PID = PID
+        self.unit_file = unit_file
+        self.unit_file_addr = unit_file_addr
+        self.size = size
+        self.mtime = mtime
+        self.atime = atime
+    """UnixFilesystem is an example of Entity containing specific attributes that are relevant to a Unix filesystem.
 
-class TEXT(DataType):
-    name: str
-
-class INTEGER(DataType):
-    name: str
-
-class REAL(DataType):
-    name: str
-
-class BLOB(DataType):  # BLOBs are always a whole ele.sql table entry each 
-    name: str
-
-class VARCHAR(DataType):
-    name: str
-    length: int
-
-class BYTES(DataType):  # ASCII BYTES objects
-    name: str
-    length: int
-
-class Entity(BaseModel):
-    name: str
-    description: str
-    attributes: list[Attribute] = []
-    elements: list[Element] = []
-
-class UnixFilesystem(BaseModel):
-    inode: int
-    pathname: str
-    filetype: str
-    permissions: str
-    owner: str
-    group_id: int
-    PID: int
-    unit_file: str
-    unit_file_addr: str
-    size: int
-    mtime: datetime
-    atime: datetime
-
+    Args:
+        Entity (Entity): Entity is the parent class of UnixFilesystem
+    Returns:
+        None
+    """
     def __str__(self):
         return f"{self.inode}: {self.pathname}"
 
-class MySettings(BaseModel):
-    required_date: datetime
-
-    class Config:
-        env_file = ".env"
-
-    def logger(self):
-        logging.basicConfig(level=logging.DEBUG, format="%(asctime)s %(levelname)s %(message)s")
-        self.logger = logging.getLogger(__name__)
-        return self.logger
-
 if __name__ == "__main__":
     load_dotenv()
-    settings = MySettings()
-    settings.logger()
+    exit()
