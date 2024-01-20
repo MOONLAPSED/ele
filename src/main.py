@@ -25,51 +25,49 @@ Args:
 Returns:
     bool: Description of return value
 (optional)Raises:"""
-
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)  # Global logger
 
 
-class MySettings(BaseSettings):
-    """
-    Configuration settings for the application.
-    """
-
-    launch_time: datetime = Field(default_factory=datetime.now)
-
-    class Config:
-        env_file = ".env"
-
-    @classmethod
-    def get_logger(cls):
-        if not logger.handlers:
-            cls.setup_logger()
-        return logger
-
-    @classmethod
-    def setup_logger(cls):
-        logspath = Path("./logs")
-        logspath.mkdir(parents=True, exist_ok=True)
-        logfile = logspath / "logs.txt"
-
-        logger.setLevel(logging.DEBUG)
-        formatter = logging.Formatter("%(asctime)s %(levelname)s %(message)s")
-
-        file_handler = logging.FileHandler(str(logfile))
-        file_handler.setFormatter(formatter)
-
-        # Preventing duplicate handlers
-        if not logger.handlers:
-            logger.addHandler(file_handler)
-
-        logger.info(f"MySettings loaded in {os.getcwd()}.")
-
-        return logger
 
 class Element(ABC):
     def __init__(self, name: str, description: str):
         self.name = name
         self.description = description
+    
+    @abstractmethod
+    def to_bytes(self) -> bytes:
+        """Return the frame data as bytes with '---' and '\n' as delimiters, stripped of whitespace."""
+        lines = self.to_str().splitlines()
+        for line in lines:
+            yield line.strip().encode('utf-8')
+        yield b'---\n'
+
+    @abstractmethod
+    def to_str(self) -> str:
+        """Return the frame data as a string representation with '---' and '\n' 'EOF' and '<im_end>' as delimiters."""
+        pass
+
+    def dict(self) -> dict:
+        """Return a dictionary representation of the model."""
+        return {
+            "name": self.name,
+            "description": self.description,
+        }
+
+@validator('name')
+def validate_name(cls, name: Union[bytes, str]):
+    if name is None:
+        raise ValueError("Name must not be None")
+    return bytes(name, 'utf-8')
+
+@validator('description')
+def validate_description(cls, description: Union[bytes, str]):
+    if description is None:
+        raise ValueError("Description must not be None")
+    return bytes(description, 'utf-8')
+    
+
 
 class Attribute(Element):
     ALLOWED_TYPES = {"TEXT", "INTEGER", "REAL", "BLOB", "VARCHAR", "BOOLEAN", "UFS", "VECTOR", "TIMESTAMP", "EMBEDDING"}
@@ -93,11 +91,6 @@ class Entity(Element):
     def __init__(self, name: str, description: str, elements: List[Element] = None):
         super().__init__(name, description)
         self.elements = elements if elements is not None else []
-        
-    @abstractmethod
-    def to_bytes(self) -> bytes:
-        """Return the frame data as bytes."""
-        pass
     """Entity inherits from Element, containing a list of Element instances.
     This allows Entity objects to contain Attribute objects and any other objects that are subclasses of Element.
     
