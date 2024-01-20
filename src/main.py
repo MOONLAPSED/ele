@@ -93,6 +93,11 @@ class Entity(Element):
     def __init__(self, name: str, description: str, elements: List[Element] = None):
         super().__init__(name, description)
         self.elements = elements if elements is not None else []
+        
+    @abstractmethod
+    def to_bytes(self) -> bytes:
+        """Return the frame data as bytes."""
+        pass
     """Entity inherits from Element, containing a list of Element instances.
     This allows Entity objects to contain Attribute objects and any other objects that are subclasses of Element.
     
