@@ -1,6 +1,19 @@
 #!/usr/bin/env python3
-
-from dotenv import load_dotenv
+ #01 /src/main.py - what is this file and this module?                            #
+# +-----ele-------------Copyright-(c)-2024-MIT-license------moonlapsed----------+
+# | 01) (this) glossary, imports, logs-init, and HOWTO docstring in this repo   |
+# | 02) FrameModel abstract base class                                          |
+# | 03) AbstractDataModel                                                       |
+# | 04) SerialObject                                                            |
+# | 05) ConcreteSerialModel                                                     |
+# | 06) Element                                                                 |
+# | 07) Attribute                                                               |
+# | 07) Entity                                                                  |
+# | 09) SerializableEntity                                                      |
+# | 10) UnixFilesystem                                                          |
+# | 11) if __name__==...                                                        |
+# +=============================================================================+
+ # Imports                                                                       #
 import logging
 import json
 import sys
@@ -8,10 +21,10 @@ import uuid
 import yaml
 from abc import ABC, abstractmethod
 from datetime import datetime
-from dataclasses import dataclass, field, validator
-from typing import Callable, Any, Optional, list
+from dataclasses import dataclass, field
+from typing import list
 
-# HOWTO: docstrings
+ # HOWTO: docstrings
 """Short one line summary
 (optional)Extended description of the class/function/method.
 
@@ -22,9 +35,11 @@ Returns:
     bool: Description of return value
 (optional)Raises:"""
 
+ # Logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)  # Global logger
 
+ #02
 class FrameModel(ABC):
     """A frame model is a data structure that contains the data of a frame aka a chunk of text contained by dilimiters.
         Delimiters are defined as '---' and '\n' or its analogues (EOF) or <|in_end|> or "..." etc for the start and end of a frame respectively.)
@@ -35,8 +50,9 @@ class FrameModel(ABC):
     def to_bytes(self) -> bytes:
         """Return the frame data as bytes."""
         pass
-
-
+    # TODO: class naive cython os.pipe() implementation to accept FrameModel as input and return bytes as output (inside the Ubuntu-22.04-LTS docker container)
+    # TODO: from_bytes abstract?
+ #03
 class AbstractDataModel(FrameModel, ABC):
     """A data model is a data structure that contains the data of a frame aka a chunk of text contained by dilimiters.
         It has abstract methods --> to str and --> to os.pipe() which are implemented by the concrete classes.
@@ -50,8 +66,8 @@ class AbstractDataModel(FrameModel, ABC):
     def to_str(self) -> str:
         """Return the frame data as a string representation."""
         pass
-
-
+    # TODO: frozen @dataclass decorator to ensure that the class is immutable + fast
+ #04
 class SerialObject(AbstractDataModel, ABC):
     """SerialObject is an abstract class that defines the interface for serializable objects within the abstract data model.
         Inputs:
@@ -71,7 +87,7 @@ class SerialObject(AbstractDataModel, ABC):
         """Return a JSON string representation of the model."""
         pass
 
-
+ #05
 @dataclass
 class ConcreteSerialModel(SerialObject):
     """
@@ -115,7 +131,7 @@ class ConcreteSerialModel(SerialObject):
     def json(self) -> str:
         """Return a JSON representation of the model as a string."""
         return json.dumps(self.dict())
-
+ #06
 class Element(ABC):
     """
     Composable-serializers, abstract interfaces, and polymorphism are used to create a "has-a" relationship between the serializer and the entity.
@@ -143,7 +159,7 @@ class Element(ABC):
             "name": self.name,
             "description": self.description,
         }
-
+ #07
 class Attribute(Element):
     ALLOWED_TYPES = {"TEXT", "INTEGER", "REAL", "BLOB", "VARCHAR", "BOOLEAN", "UFS", "VECTOR", "TIMESTAMP", "EMBEDDING"}
 
@@ -161,7 +177,7 @@ class Attribute(Element):
     Returns:
         None
     """
-
+ #08
 class Entity(Element):
     def __init__(self, name: str, description: str, elements: list[Element] = None):
         super().__init__(name, description)
@@ -185,7 +201,7 @@ class Entity(Element):
     def to_str(self) -> str:
         """Return a string representation of the Element object."""
         return '\n<im_start>'.join([e.to_str() for e in self.elements]) + '\n<im_end>\n'
-
+ #09
 @dataclass(frozen=True, slots=True)  # immutable/frozen by default + no __dict__ method
 class SerializableEntity(Entity):
     """Entity composed with a serial model
@@ -201,7 +217,7 @@ class SerializableEntity(Entity):
         else:
             return json.dumps(self.dict())
 
-
+ #10
 class UnixFilesystem(SerializableEntity):
     def __init__(self, name: str, description: str, elements: list[Element], inode: int, pathname: str, filetype: str,
                  permissions: str, owner: str, group_id: int, PID: int, unit_file: str, unit_file_addr: str,
@@ -261,7 +277,7 @@ def create_virtual_file(path, content):
             f.write(content)
         f.write("---\n")
 
-
+ #11
 if __name__ == "__main__":
     """
     Displays the output of the different methods of the model using an example UnixFilesystem object, often called just 'ufs'.
