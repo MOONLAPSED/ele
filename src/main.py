@@ -42,8 +42,8 @@ logger = logging.getLogger(__name__)  # Global logger
  #02
 class FrameModel(ABC):
     """A frame model is a data structure that contains the data of a frame aka a chunk of text contained by dilimiters.
-        Delimiters are defined as '---' and '\n' or its analogues (EOF) or <|in_end|> or "..." etc for the start and end of a frame respectively.)
-        the frame model is a data structure that is independent of the source of the data.
+        Delimiters are defined as '---' and '\n' or its analogues (EOF) or <|im_end|> or "..." etc for the start and end of a frame respectively.
+        The frame model is a data structure that is independent of the source of the data.
         portability note: "dilimiters" are established by the type of encoding and the arbitrary writing-style of the source data. eg: ASCII
     """
     @abstractmethod
@@ -202,13 +202,20 @@ class Entity(Element):
         """Return a string representation of the Element object."""
         return '\n<im_start>'.join([e.to_str() for e in self.elements]) + '\n<im_end>\n'
  #09
-@dataclass(frozen=True, slots=True)  # immutable/frozen by default + no __dict__ method
+@dataclass(frozen=True, slots=True)  # immutable + no __dict__ method
 class SerializableEntity(Entity):
     """Entity composed with a serial model
-    example:
-        e = SerializableEntity("name", "desc") 
-        e.serializer = ConcreteSerialModel("name", 0, None)  
-        print(e.serialize())"""
+    Attributes:
+        serializer (ConcreteSerialModel): serial model
+    Methods:
+        serialize (self): serialize the entity to a JSON string
+    Args:
+        name (str): name of the entity
+        description (str): description of the entity
+        elements (List[Element], optional): list of elements. Defaults to None.
+    Returns:
+        None
+    """
     serializer: ConcreteSerialModel = None
     
     def serialize(self):
