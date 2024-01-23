@@ -242,23 +242,12 @@ if __name__ == "__main__":
     def tests():
         # Create a new entity
         entity = Entity("Entity", "This is an entity")
+        entity.elements.append(Attribute("Attribute", "This is an attribute", "INTEGER"))
         print(entity)
         print(entity.__dict__)
-
-        ufx=UnixFilesystem("UnixFilesystem", "This is a unix filesystem")
-        ufx.elements.append(Attribute("Attribute", "This is an attribute", "INTEGER"))
-        ufx.elements.append(Attribute("Attribute2", "This is an attribute", "INTEGER"))
-        entity.elements.append(ufx)
-        print(ufx)
-        print(ufx.__dict__)
-        for u in ufx.elements:
-            print(u.__dict__)
-
-        # Create a new entity
-        entity = Entity("Entity", "This is an entity")
-        print(entity)
-        print(entity.__dict__)
-
+        for e in entity.elements:
+            print(e.__dict__)
+        # Create a new UFS entity
         ufx=UnixFilesystem("UnixFilesystem", "This is a unix filesystem")
         ufx.elements.append(Attribute("Attribute", "This is an attribute", "INTEGER"))
         ufx.elements.append(Attribute("Attribute2", "This is an attribute", "INTEGER"))
