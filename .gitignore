@@ -1,3 +1,5 @@
+/.virtual_folder/*
+/virtual_folder/*
 *.scratch
 /.scratch/*
 /logs/
