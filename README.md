@@ -1,5 +1,5 @@
 ### ::ele pseudo-markup+procedural_text+logic:
-
+```
 """
 // Placeholders and Variables:   
 {{key}}: A placeholder for a variable or input value that will be replaced with actual content when used.
@@ -33,7 +33,7 @@ fn(-{{key}}): Represents a function fn that takes the value of key as an input a
 fn(*{{key}}): Represents a function fn that takes the value of key as an input and repeats a specific property or attribute key times.
 fn(?{{key1}}:{{key2}}): Represents a function fn that takes the values of key1 and key2 as inputs and includes key2 in the generated content if the condition specified by key1 is met.
 """
-
+```
 How to use Open Interpreter locally
 ​
 Ollama
