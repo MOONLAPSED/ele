@@ -1,26 +1,43 @@
-# ele
+### ::ele pseudo-markup+procedural_text+logic:
 
-> `pip install -e .` # Install as a module using pip
+"""
+// Placeholders and Variables:   
+{{key}}: A placeholder for a variable or input value that will be replaced with actual content when used.
+${{key}}: A variable or input value that is instantiated or declared and is only required once per variable. It is not replaced with content but serves to declare variables.
 
-> `python setup.py develop` (adds 'ele', 'ele_source', and 'ele_main' to $PATH)
+// Modifiers:
+~{{key}}: Indicates an approximate value or range for the specified key. 
++{{key}}: Appends or concatenates the value of key with another element.
+={{key}}: Specifies that the generated content should have an exact match or value equal to key.
+!{{key}}: Negates or excludes the value of key from the generated content.  
+-{{key}}: Removes or subtracts the value of key from the generated content.
+*{{key}}: Specifies that the generated content should repeat the specified property or attribute key times.  
+>{{key}}, <{{key}}, <={{key}}, >={{key}}: Define length comparisons for generated content.
 
-Ele is designed to sort and organize my `2023dir` of 'RLHF' files and notes using NLP, an Ubuntu-22.04-LTS docker container, and a custom Python app.
+// Conditional Expressions:
+?{{key1}}:{{key2}}: Used for conditional expressions, where if the condition specified by key1 is met, the generated content will include key2.
 
-The end result will be a `rlhf.db` object or, preferably, a methodology to be used going forward in 2024.
+// Keywords:   
+ANY, ALWAYS, NEVER, WITH, AND, ONLY, NOT, UNIQUE: Keywords that modify or constrain the generated content based on specific conditions.
 
-## 2023dir:
-Includes multimedia, duplicates, snippets, and oddballs. Generated using a hectic collection of tools and sources, most notably being **LogSeq** and `Obsidian`. The latter likely being the basis of `ele syntax`.
+// Functions:
+between({{key1}}, {{key2}}): Specifies a range for a certain attribute or property in the generated content.  
+random({{key1}}, {{key2}}, ...): Specifies that the generated content should include one of the provided keys at random.
+mixed({{key1}}, {{key2}}, ...): Specifies that the generated content should include a combination of the provided keys.
+contains({{key}}): Indicates that the generated content must contain the specified key.
+optimize({{key}}): Suggests that the generated content should optimize for a certain aspect represented by the key.
+limit({{key}}, {{value}}): Sets a limit on the number of times the specified key can appear in the generated content.
 
-## Ele Syntax
-Given that a delimiter within the ele RLHF architecture is `(delimiter = "---")`, the ele syntax is as follows:
+// Function Arguments:
+fn(-{{key}}): Represents a function fn that takes the value of key as an input and removes or subtracts it from the generated content. 
+fn(*{{key}}): Represents a function fn that takes the value of key as an input and repeats a specific property or attribute key times.
+fn(?{{key1}}:{{key2}}): Represents a function fn that takes the values of key1 and key2 as inputs and includes key2 in the generated content if the condition specified by key1 is met.
+"""
 
-    delimiter
+How to use Open Interpreter locally
+​
+Ollama
+Download Ollama - https://ollama.ai/download
+ollama run dolphin-mixtral:8x7b-v2.6
+interpreter --model ollama/dolphin-mixtral:8x7b-v2.6
 
-    body
-
-    delimiter OR EOF OR ... (logic to be determined)
-
-With `ele syntax` defining an `ele frame`.
-
-## Ele Frame
-Binary encoded, pipe-ready, and embedding-ready core data type - enforced using polymorphism and ABC in the application code.

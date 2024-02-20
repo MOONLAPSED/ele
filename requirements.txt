@@ -1,1 +1,11 @@
-openai
+python-dotenv
+matplotlib
+numpy
+pandas
+pathlib
+requests
+jupyter
+ipykernel
+xonsh-jupyter
+httpx
+click
