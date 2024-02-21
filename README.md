@@ -10,7 +10,7 @@ _ele_ is an 'atomic' data structure pivotal to a dynamic, gradient-based and hyp
 Microsoft has released the amazing UFO (don't like the name, haha) framework which allows, using vision+language processing, an addressable interface for agentic interaction within Windows. ele will only instantiate such agents, any agents, within the runtime windows ${{SANDBOX}}, {{SANDBOX|WSB}}. This is a very exciting development and will be the focus of the next major release of ele.
 
 ### ::ele pseudo-markup+procedural_text+logic:
-
+```
 """
 // Placeholders and Variables:   
 {{key}}: A placeholder for a variable or input value that will be replaced with actual content when used.
@@ -44,4 +44,3 @@ fn(-{{key}}): Represents a function fn that takes the value of key as an input a
 fn(*{{key}}): Represents a function fn that takes the value of key as an input and repeats a specific property or attribute key times.
 fn(?{{key1}}:{{key2}}): Represents a function fn that takes the values of key1 and key2 as inputs and includes key2 in the generated content if the condition specified by key1 is met.
 """
-
