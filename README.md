@@ -1,3 +1,14 @@
+# ele
+
+_ele_ is an 'atomic' data structure pivotal to a dynamic, gradient-based and hyperparameter-focused NLP ecosystem. It facilitates the generation of emergent code, behavior, and content, along with domain-specific adaptations, genetic-functional-generational querying and prompting, and detailed logging of agentic activities, primarily for Large Language Models (LLMs) running on consumer grade hardware.
+
+### element+procedural_text+logic:
+
+`${{ele}}`, `{{ele|element}}`, `{{ele|runtime_ele}}` represents a domain-specific variable-data-class that leverages NLP, LLM, and ML technologies—augmented by a pseudo-shell environment (`${{SHELL}}, {{SHELL|BASH}}`). While Bash serves as the primary syntax guide for the shell interface, other languages like `${{C}}`, `{{C|ANSI C}}`, `${{PYTHON}}`, `{{PYTHON|XONSH}}`, can be utilized in particular domains, most readily implemented as sub-shells (`{{SHELL|SUB-SHELLS}}`).
+
+### feb 24 update
+Microsoft has released the amazing UFO (don't like the name, haha) framework which allows, using vision+language processing, an addressable interface for agentic interaction within Windows. ele will only instantiate such agents, any agents, within the runtime windows ${{SANDBOX}}, {{SANDBOX|WSB}}. This is a very exciting development and will be the focus of the next major release of ele.
+
 ### ::ele pseudo-markup+procedural_text+logic:
 
 """
@@ -15,7 +26,7 @@ ${{key}}: A variable or input value that is instantiated or declared and is only
 >{{key}}, <{{key}}, <={{key}}, >={{key}}: Define length comparisons for generated content.
 
 // Conditional Expressions:
-?{{key1}}:{{key2}}: Used for conditional expressions, where if the condition specified by key1 is met, the generated content will include key2.
+?{{key1}}{{key2}}: Used for conditional expressions, where if the condition specified by key1 is met, the generated content will include key2.
 
 // Keywords:   
 ANY, ALWAYS, NEVER, WITH, AND, ONLY, NOT, UNIQUE: Keywords that modify or constrain the generated content based on specific conditions.
@@ -33,11 +44,4 @@ fn(-{{key}}): Represents a function fn that takes the value of key as an input a
 fn(*{{key}}): Represents a function fn that takes the value of key as an input and repeats a specific property or attribute key times.
 fn(?{{key1}}:{{key2}}): Represents a function fn that takes the values of key1 and key2 as inputs and includes key2 in the generated content if the condition specified by key1 is met.
 """
-
-How to use Open Interpreter locally
-​
-Ollama
-Download Ollama - https://ollama.ai/download
-ollama run dolphin-mixtral:8x7b-v2.6
-interpreter --model ollama/dolphin-mixtral:8x7b-v2.6
 
