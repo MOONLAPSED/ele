@@ -1,6 +1,6 @@
 # assume setup.py is in the same directory as src and src/__init__.py
-# assume setup.py has invoked cognic/src/lager.py and cognic/src/__init__.py
-# assume setup.py has invoked cognic/main.py (this script)
+# assume setup.py has invoked ele/src/lager.py and cognic/src/__init__.py
+# assume setup.py has invoked ele/main.py (this script)
 import sys
 import os
 from src.lager import run
@@ -76,5 +76,5 @@ if __name__ == "__main__":
     # ...
     sys.exit(0)
 else:
-    print("You have no src directory so please run /cognic/setup.py directly")
+    print("You have no src directory so please run /ele/setup.py directly")
     sys.exit(1)

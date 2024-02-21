@@ -9,6 +9,15 @@ _ele_ is an 'atomic' data structure pivotal to a dynamic, gradient-based and hyp
 ### feb 24 update
 Microsoft has released the amazing UFO (don't like the name, haha) framework which allows, using vision+language processing, an addressable interface for agentic interaction within Windows. ele will only instantiate such agents, any agents, within the runtime windows ${{SANDBOX}}, {{SANDBOX|WSB}}. This is a very exciting development and will be the focus of the next major release of ele.
 
+### why?
+
+Ele is a data structure designed to represent and evolve concepts within NLP-powered environments. Here's what makes it unique:
+
+* **NLP at its Core:** ele elements are shaped and modified in real time using natural language processing and LLM interactions.
+* **Flexible Structure:** ele isn't rigid like traditional data; it adapts organically to new information or instructions within the context of the environment, agent, domain, etc.
+* **Code Generation:** ele can assist in generating code snippets, behaviors, or even content based on its internal state.
+* **Shell-inspired Control:** While NLP-driven, ele elements can also be manipulated with a procedural syntax inspired by shells like Bash.
+
 ### ::ele pseudo-markup+procedural_text+logic:
 ```
 """
