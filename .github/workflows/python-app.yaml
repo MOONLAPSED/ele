@@ -28,7 +28,7 @@ jobs:
         uses: actions/checkout@v2
       - name: Navigate to directory with main.py and print current directory
         run: |
-          cd ${{ github.workspace }}/ele
+          cd ${{ github.workspace }}
           pwd
           ls -la
       - name: Create log file
@@ -36,7 +36,7 @@ jobs:
 
       - name: python-main
         run: |
-          cd ${{ github.workspace }}/ele
+          cd ${{ github.workspace }}
           python setup.py 2>&1 | tee logs/python-app.log
           echo "Archived contents of python-app.log."
       - name: Archive test output as artifact
