@@ -1,0 +1,3 @@
+[submodule "UFO"]
+	path = UFO
+	url = https://github.com/microsoft/UFO.git
