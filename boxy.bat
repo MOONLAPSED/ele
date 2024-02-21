@@ -2,7 +2,7 @@
 :: It adds Scoop to the PATH and launches the rollout script.
 
 REM Add Scoop to PATH for this session 
-setx PATH "%PATH%;C:\Users\WDAGUtilityAccount\AppData\Local\Programs\Scoop\bin"
+setx PATH "%PATH%;C:\Users\WDAGUtilityAccount\AppData\Local\Programs\Scoop\bin" /M
 
 REM Wait for 5 seconds
 timeout /t 5
