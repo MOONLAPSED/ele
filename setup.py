@@ -52,4 +52,4 @@ entry_points={
     'console_scripts': [
         'ele = ele.src.lager:run', 
     ]
-}
+})
