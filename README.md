@@ -18,6 +18,13 @@ Ele is a data structure designed to represent and evolve concepts within NLP-pow
 * **Code Generation:** ele can assist in generating code snippets, behaviors, or even content based on its internal state.
 * **Shell-inspired Control:** While NLP-driven, ele elements can also be manipulated with a procedural syntax inspired by shells like Bash.
 
+### how?
+
+* clone to your local machine, set local $PATH manually in cfg.wsb and scoop.ps1/scoop.cmd, finally, rename env.example to .env and set your own variables.
+* run cfg.wsb to open container
+* inside container; try `boxy.bat` to init the container installation - if it fails then windows probably tried to artifact something and you need to exit and restart the whole container
+
+
 ### ::ele pseudo-markup+procedural_text+logic:
 ```
 """

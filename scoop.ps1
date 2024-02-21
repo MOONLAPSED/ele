@@ -1,18 +1,16 @@
 REM Install Git and update Scoop buckets
 ::Install Git and update Scoop buckets
-scoop update
 scoop bucket add versions
 scoop bucket add extras
 scoop install git
 scoop install main/gh
 scoop install versions/windows-terminal-preview
-REM scoop install main/winpython  # un-comment if you prefer over micromamba
-scoop install git
 scoop update
+
 
 ::Set desktop target and PATH additions (using Environment Variables)
 $desktop = "C:\Users\WDAGUtilityAccount\Desktop"
-$env:PATH = [Environment]::GetEnvironmentVariable("PATH", "User") # Get existing User PATH
+$env:PATH = [Environment]::GetEnvironmentVariable("PATH", "User")
 $env:PATH += ";$desktop\micromamba;$desktop\Scoop\bin"
 
 ::Define the RunCommand function
@@ -37,7 +35,7 @@ RunCommand "scoop install extras/chatall"
 RunCommand "scoop install main/fq"
 RunCommand "scoop install main/zoxide"
 RunCommand "scoop install main/nu"
-RunCommand "scoop install main/gnutls"
+RunCommand "scoop install main/windows-application-driver"
 RunCommand "scoop install extras/texteditorpro"
 RunCommand "scoop install main/miller"
 RunCommand "scoop install main/clink"
