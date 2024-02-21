@@ -36,7 +36,7 @@ jobs:
 
       - name: python-main
         run: |
-          cd /home/runner/work/cognic/cognic
+          cd /home/runner/work/ele/ele
           python setup.py 2>&1 | tee ../logs/python-app.log
           echo "Archived contents of python-app.log."
       - name: Archive test output as artifact
