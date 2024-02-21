@@ -9,6 +9,18 @@ import os
 import time
 import subprocess
 
+def runtime():
+    try:
+        git_hash = subprocess.check_output(["git", "rev-parse", "--verify", "HEAD"]).decode().strip()
+        git_tag = subprocess.check_output(["git", "describe", "--tags", "--exact-match", git_hash, "2>/dev/null"]).decode().strip()
+        return git_hash, git_tag
+    except subprocess.CalledProcessError as e:
+        if "fatal: not a git repository" in e.output.decode():
+            print("No Git repository detected in this directory.")
+            return None  # Return None on error 
+        else:
+            raise  # Re-raise other Git errors
+
 def main():
     try:
         sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))  # is there adequate permission to expand the path?
@@ -22,23 +34,34 @@ def main():
         ])
         # ... pre-git initialization
         return 0
-    
+
 if __name__ == "__main__":
     def runtime():
         try:
             git_hash = subprocess.check_output(["git", "rev-parse", "--verify", "HEAD"]).decode().strip()
             git_tag = subprocess.check_output(["git", "describe", "--tags", "--exact-match", git_hash, "2>/dev/null"]).decode().strip()
-            # ...
             print(f"git_hash: {git_hash} | git_tag: {git_tag}")
             return git_hash, git_tag
-        except Exception as e:
-            # ...
-            print(e)
-    
+
+        except subprocess.CalledProcessError as e:
+            if "fatal: not a git repository" in e.output.decode():
+                print("No Git repository detected in this directory.")
+                return None, None  # Return None to indicate absence of Git info
+            else:
+                raise  # Re-raise other Git errors for debugging
     try:
         root = None
         branch = None
+
         rt = runtime()
+        if rt is not None:  # Check if Git info was retrieved
+            git_hash, git_tag = rt
+        if rt is None:
+            if input("No Git repository found. Initialize a new one? (y/n): ").lower() == 'y':
+                # ... Git initialization code ... 
+                branch.info(f"|{branch}-__main__-|")
+            else:
+                print("Git initialization skipped.")
         # ...
         main()
         root, branch = run()
@@ -66,7 +89,7 @@ if __name__ == "__main__":
                 print("last chance to ctrl+c"); time.sleep(1)
                 print("git init, commit, tag complete... Ima firin mah lazor!")
                 # git push functionality -- this is dangerous code I need to heavily test: TODO
-            # subprocess.run("git remote add origin https://github.com/tp-cognic/cognic.git", shell=True, check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            # subprocess.run("git remote add origin https://github.com/MOONLAPSED/ele.git", shell=True, check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
                 # subprocess.run("git push -u origin master", shell=True, check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
             
             else: # this is the default case
