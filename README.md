@@ -20,7 +20,7 @@ Ele is a data structure designed to represent and evolve concepts within NLP-pow
 
 ### how?
 
-* clone to your local machine, set local $PATH manually in cfg.wsb and scoop.ps1/scoop.cmd, finally, rename env.example to .env and set your own variables.
+* clone to your local machine, set local $PATH manually in cfg.wsb and scoop.ps1.
 * run cfg.wsb to open container
 * inside container; try `boxy.bat` to init the container installation - if it fails then windows probably tried to artifact something and you need to exit and restart the whole container
 

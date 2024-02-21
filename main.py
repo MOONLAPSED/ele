@@ -3,23 +3,23 @@
 # assume setup.py has invoked ele/main.py (this script)
 import sys
 import os
-from src.lager import run
-import sys
-import os
 import time
 import subprocess
+from src.lager import run
 
 def runtime():
     try:
         git_hash = subprocess.check_output(["git", "rev-parse", "--verify", "HEAD"]).decode().strip()
         git_tag = subprocess.check_output(["git", "describe", "--tags", "--exact-match", git_hash, "2>/dev/null"]).decode().strip()
+        print(f"git_hash: {git_hash} | git_tag: {git_tag}")
         return git_hash, git_tag
+
     except subprocess.CalledProcessError as e:
         if "fatal: not a git repository" in e.output.decode():
             print("No Git repository detected in this directory.")
-            return None  # Return None on error 
+            return None, None  # Return None to indicate absence of Git info
         else:
-            raise  # Re-raise other Git errors
+            raise  # Re-raise other Git errors for debugging
 
 def main():
     try:
@@ -36,19 +36,6 @@ def main():
         return 0
 
 if __name__ == "__main__":
-    def runtime():
-        try:
-            git_hash = subprocess.check_output(["git", "rev-parse", "--verify", "HEAD"]).decode().strip()
-            git_tag = subprocess.check_output(["git", "describe", "--tags", "--exact-match", git_hash, "2>/dev/null"]).decode().strip()
-            print(f"git_hash: {git_hash} | git_tag: {git_tag}")
-            return git_hash, git_tag
-
-        except subprocess.CalledProcessError as e:
-            if "fatal: not a git repository" in e.output.decode():
-                print("No Git repository detected in this directory.")
-                return None, None  # Return None to indicate absence of Git info
-            else:
-                raise  # Re-raise other Git errors for debugging
     try:
         root = None
         branch = None
@@ -56,12 +43,16 @@ if __name__ == "__main__":
         rt = runtime()
         if rt is not None:  # Check if Git info was retrieved
             git_hash, git_tag = rt
+        else:
+            git_hash, git_tag = None, None
+
         if rt is None:
             if input("No Git repository found. Initialize a new one? (y/n): ").lower() == 'y':
                 # ... Git initialization code ... 
                 branch.info(f"|{branch}-__main__-|")
             else:
-                print("Git initialization skipped.")
+                print("Git initialization skipped")
+        
         # ...
         main()
         root, branch = run()
