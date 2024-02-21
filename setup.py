@@ -22,21 +22,21 @@ def run_setup(install_commands):
 if __name__ == "__main__":
     install_commands = [
         'conda install -c conda-forge jax xonsh',
-        'conda develop xonsh',  # set xonsh as shell
-        'pip install xonsh-jupyter',
-        'xonsh -c jupyter notebook',
+        # ...
     ]
 
     run_setup(install_commands)
 
 else:
-    print("You have no src directory so please run /cognic/setup.py directly")
+    print("You have no src directory so please run /ele/setup.py directly")
 
 setup(
     name='ele',
     version='1.0',
     packages=find_packages(where='src'),
     install_requires=[
+        'conda-forge::jax',
+        'conda-forge::xonsh',
         'python-dotenv',
         'matplotlib',
         'numpy',
@@ -45,13 +45,12 @@ setup(
         'requests',
         'jupyter',
         'ipykernel',
-        'xonsh-jupyter',
         'httpx',
         'click',
     ],
     entry_points={
         'console_scripts': [
             'ele = ele:src.lager:run',
-         ],
+        ],
     },
 )

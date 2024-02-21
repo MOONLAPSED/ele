@@ -5,6 +5,8 @@ UFO/*
 /bin/*
 /md/*
 !logs/
+!logs/python-app.log
+!logs/app.log
 *.log
 # Byte-compiled / optimized / DLL files
 __pycache__/
