@@ -3,13 +3,10 @@
 # assume setup.py has invoked ele/main.py (this script)
 import sys
 import subprocess
-from src.lager import Lager
-from pydantic import BaseModel, Field
-
-# dont need these if I import 
-import logging
-from datetime import datetime, date
 import os
+import logging
+from src.lager import Lager
+from setup import MySettings
 
 """main handles setting launch and state environment variables and running the runtime of the working application."""
 
@@ -24,21 +21,6 @@ def runtime(lager):
             return None
         else:
             raise  # Re-raise other Git errors for debugging
-
-class MySettings(BaseModel):
-    required_date: date = Field(default_factory=datetime.now().date)
-    required_int: int = Field(0, ge=0)  # Set default value here
-    state: int = Field(0)  # New field to hold the state value
-
-    def __init__(self):
-        super().__init__()
-        try:
-            self.required_int = int(os.getenv("REQUIRED_INT", default=0))
-            self.state = int(os.getenv("STATE", default=0))  # Load 'state' from .env file
-        except Exception as e:
-            logging.basicConfig(filename='/logs/setup.log', level=logging.ERROR)
-            logging.error(f"Error loading environment variables: {e}", exc_info=True)
-            raise  # Re-raise the exception to halt execution
 
 if __name__ == "__main__":
     rt = None
