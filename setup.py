@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-from pydantic import BaseModel, Field
+
 from datetime import datetime, date
 from time import sleep
 import logging
@@ -63,20 +63,7 @@ def run_setup(install_commands, lager):
         logging.basicConfig(filename='/logs/setup.log', level=logging.ERROR)
         logging.error(f"Error running setup: {e}", exc_info=True)
 
-class MySettings(BaseModel):
-    required_date: date = Field(default_factory=datetime.now().date)
-    required_int: int = Field(0, ge=0)  # Set default value here
-    state: int = Field(0)  # New field to hold the state value
 
-    def __init__(self):
-        super().__init__()
-        try:
-            self.required_int = int(os.getenv("REQUIRED_INT", default=0))
-            self.state = int(os.getenv("STATE", default=0))  # Load 'state' from .env file
-        except ValueError as e:
-            logging.basicConfig(filename='/logs/setup.log', level=logging.ERROR)
-            logging.error(f"Error loading environment variables: {e}", exc_info=True)
-            raise  # Re-raise the exception to halt execution
 def mainpath():
     try:
         sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))  # is there adequate permission to expand the path?
@@ -107,11 +94,6 @@ def main():
         raise  # Re-raise the exception to halt execution
 
 if __name__ == "__main__":
-    settings = MySettings()
-    settings.state = 1  # Set the state to 1 to indicate runtime pydantic validation has completed
-    with open('.env', 'w') as env_file:  # Update state in .env file
-        env_file.write(f"STATE={settings.state}\n")
-
     setup(
         name='ele',
         version='1.0',
@@ -139,10 +121,10 @@ if __name__ == "__main__":
 
     try:
         entry_point()
-    finally:
-        settings.state = 0  # pydantic validation init and app has achieved runtime, set state to 0 (for possible re-initialization/debugging)
-        with open('.env', 'w') as env_file:  # Update state in .env file
-            env_file.write(f"STATE={settings.state}\n")
+    except Exception as e:
+        logging.basicConfig(filename='/logs/setup.log', level=logging.ERROR)
+        logging.error(f"Error running setup or expanding path: {e}", exc_info=True)
+        raise  # Re-raise the exception to halt execution
 else:
     logging.basicConfig(filename='/logs/setup.log', level=logging.ERROR)
     logging.error("Setup error in setup.py", exc_info=True)
