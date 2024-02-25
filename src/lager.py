@@ -7,6 +7,7 @@ import logging
 from logging.config import dictConfig
 from logging.handlers import RotatingFileHandler, QueueHandler, QueueListener, HTTPHandler
 from dotenv import load_dotenv
+import json
 
 """
 The Lager class provides centralized logging configuration and management for your Python application.
@@ -60,7 +61,7 @@ LOGGING_CONFIG = {
             'level': logging.INFO,
             'formatter': 'default',
             'class': 'logging.handlers.RotatingFileHandler',
-            'filename': 'logs/app.log',
+            'filename': os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'logs', 'app.log')),
             'maxBytes': 10485760,  # 10MB 
             'backupCount': 10
         }

@@ -8,6 +8,7 @@ from logging.handlers import RotatingFileHandler
 from setuptools import setup, find_packages
 import subprocess
 import os
+import sys
 from dotenv import load_dotenv
 from src.lager import Lager
 
@@ -57,7 +58,7 @@ def run_setup(install_commands, lager):
         for command in install_commands:
             exe_command(command)
         # ...
-        # exe_command('python main.py')  # runs main.py AFTER installing dependencies etc.
+        exe_command('python main.py')  # runs main.py AFTER installing dependencies etc.
     except Exception as e:
         logging.basicConfig(filename='/logs/setup.log', level=logging.ERROR)
         logging.error(f"Error running setup: {e}", exc_info=True)
@@ -76,6 +77,19 @@ class MySettings(BaseModel):
             logging.basicConfig(filename='/logs/setup.log', level=logging.ERROR)
             logging.error(f"Error loading environment variables: {e}", exc_info=True)
             raise  # Re-raise the exception to halt execution
+def mainpath():
+    try:
+        sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))  # is there adequate permission to expand the path?
+    except Exception as e:
+        print(e)
+    finally:
+        sys.path.extend([
+            os.path.abspath(os.path.join(os.path.dirname(__file__), 'src')),
+            os.path.join(os.path.dirname(os.path.realpath(__file__)), '.'),
+            os.path.abspath(os.path.dirname(__file__))
+        ])
+        # ... pre-git initialization
+        return 0
 def main():
     install_commands = [
         # 'conda install -c conda-forge jax xonsh',
@@ -85,10 +99,11 @@ def main():
         # ...
     ]
     try:
+        mainpath()
         run_setup(install_commands)
     except Exception as e:
         logging.basicConfig(filename='/logs/setup.log', level=logging.ERROR)
-        logging.error(f"Error running setup: {e}", exc_info=True)
+        logging.error(f"Error running setup or expanding path: {e}", exc_info=True)
         raise  # Re-raise the exception to halt execution
 
 if __name__ == "__main__":
