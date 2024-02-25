@@ -5,7 +5,7 @@ import sys
 import os
 import time
 import subprocess
-from src.lager import run
+from src.lager import Lager
 
 def runtime():
     try:
