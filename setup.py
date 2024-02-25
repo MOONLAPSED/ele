@@ -10,7 +10,7 @@ from dotenv import load_dotenv
 from src.lager import Lager
 from pydantic import BaseModel, Field
 from datetime import datetime, date
-
+from traceback import print_exc
 
 def load_env_settings():
     try:
@@ -72,6 +72,7 @@ def run_setup(install_commands):
         log_file = os.path.join(os.path.dirname(__file__), 'logs', 'setup.log')
         logging.basicConfig(filename=log_file, level=logging.ERROR)  # pre-custom logging
         logging.error(f"Error running setup: {e}", exc_info=True)
+        print_exc()
 
 
 class MySettings(BaseModel):
@@ -163,8 +164,11 @@ if __name__ == "__main__":
         log_file = os.path.join(os.path.dirname(__file__), 'logs', 'setup.log')
         logging.basicConfig(filename=log_file, level=logging.ERROR)  # pre-custom logging
         logging.error(f"Error running setup or expanding path: {e}", exc_info=True)
-        raise  # Re-raise the exception to halt execution
-else:
-    log_file = os.path.join(os.path.dirname(__file__), 'logs', 'setup.log')
-    logging.basicConfig(filename=log_file, level=logging.ERROR)  # pre-custom logging
-    logging.error("Setup error in setup.py", exc_info=True)
+        try:
+            raise  # Re-raise the exception to halt execution
+        except Exception as e:
+            log_file = os.path.join(os.path.dirname(__file__), 'logs', 'setup.log')
+            logging.basicConfig(filename=log_file, level=logging.ERROR)  # pre-custom logging
+            logging.error("Setup error in setup.py", exc_info=True)
+            print_exc()
+            print(f"Exception: {e}")
