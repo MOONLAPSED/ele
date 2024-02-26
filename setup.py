@@ -8,127 +8,188 @@ import os
 import sys
 from dotenv import load_dotenv
 from src.lager import Lager
-from pydantic import BaseModel, Field
-from datetime import datetime, date
+from pydantic import BaseModel, Field, validator
 from traceback import print_exc
+from dataclasses import dataclass, field
 
-def load_env_settings():
+# setup.py-only functions, not for runtime or user-facing code
+# 1. __log_error__
+# 2. __shell_error__
+# 3. __starter__
+# 4 __pipenv__
+# 5 __mainpath__
+# 6 __entry_point__/pre-runtime-endpoint
+# 7 BasedModel
+# 8 main
+# 9 validate_appsettings
+# 10 __main__/runtime
+
+def __log_error(message, log_file=os.path.join(os.path.dirname(__file__), 'logs', 'setup.log'), exc_info=False):
+    """'Brittle' errors for system init only, not a user-facing error"""
+    logging.basicConfig(filename=log_file, level=logging.ERROR)
+    logging.error(message, exc_info=exc_info)
+    return 1  # pre-custom logging
+
+def __shell_error(command, exception, log_file=os.path.join(os.path.dirname(__file__), 'logs', 'setup.log')):
+    """'Brittle' shell errors for system init only, not a user-facing error"""
+    logging.basicConfig(filename=log_file, level=logging.ERROR)
+    logging.error("Error executing command: %s", command, exc_info=exception)
+    return 1  # pre-custom logging
+
+def __starter():
+    """'Brittle' starter for system init only, not a user-facing error"""
+    if os.name == 'nt':  # Check if on Windows
+        subprocess.run('copy /Y .env.example .env', shell=True, check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    elif subprocess.run('cp -f .env.example .env', shell=True, check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE):
+        pass
+    subprocess.run('pip install requirements.txt', shell=True, check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE) 
+
+def __pipenv():
     try:
-        load_dotenv()
-    except ValueError:
-        log_file = os.path.join(os.path.dirname(__file__), 'logs', 'setup.log')
-        logging.basicConfig(filename=log_file, level=logging.ERROR)  # pre-custom logging
-        logging.error("Error loading environment variables. Check your .env file.", exc_info=True)
-        raise  # Re-raise the exception to halt execution
-
-
-def copyenv():
-    try:
-        exe_command('cp .env.example .env')
-
-    except ValueError:
-        log_file = os.path.join(os.path.dirname(__file__), 'logs', 'setup.log')
-        logging.basicConfig(filename=log_file, level=logging.ERROR)  # pre-custom logging
-        logging.error("Error loading environment variables. Check your .env file.", exc_info=True)
-        raise  # Re-raise the exception to halt execution
-
-
-def entry_point():
-    """This function is called by the setup.py file to set up the logger. It is not called by the main program."""
-    try:
-        copyenv()
-        load_env_settings()
-    except ValueError:
-        log_file = os.path.join(os.path.dirname(__file__), 'logs', 'setup.log')
-        logging.basicConfig(filename=log_file, level=logging.ERROR)  # pre-custom logging
-        logging.error("Error loading environment variables. Check your .env file.", exc_info=True)
-        raise  # Re-raise the exception to halt execution
-    lager = Lager()
-    return lager
-
-
-def exe_command(command, lager):
-    try:
-        lager.info(f'Executing command: {command}')
-        result = subprocess.run(command, shell=True, check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        lager.debug(result.stdout.decode('utf-8'))
-    except subprocess.CalledProcessError as exc:
-        error_message = exc.stderr.decode('utf-8')
-        lager.error(f'Command failed with error: {error_message}')
-    except Exception:
-        log_file = os.path.join(os.path.dirname(__file__), 'logs', 'setup.log')
-        logging.basicConfig(filename=log_file, level=logging.ERROR)  # pre-custom logging
-        logging.error("Error executing command: {command}", exc_info=True)
-
-
-def run_setup(install_commands):
-    try:
-        lager = Lager()
-        for command in install_commands:
-            exe_command(command)
-        # ...
-        exe_command('python main.py')  # runs main.py AFTER installing dependencies etc.
+        __starter()    
     except Exception as e:
-        log_file = os.path.join(os.path.dirname(__file__), 'logs', 'setup.log')
-        logging.basicConfig(filename=log_file, level=logging.ERROR)  # pre-custom logging
-        logging.error(f"Error running setup: {e}", exc_info=True)
-        print_exc()
+        if e.__traceback__:
+            __log_error(f"Error installing pipenv: {e}", exc_info=True)
+            raise  # Re-raise the exception to halt execution
+        else:
+            __log_error(f"Error installing pipenv: {e}")
+            raise  # Re-raise the exception to halt execution
+    return 0  # pre-custom logging
+
+def __mainpath():
+    project_root = os.path.abspath(os.path.dirname(__file__))  # Get project root
+
+    try:
+        sts=os.stat_result(os.stat(project_root))  # is there adequate permission to set permissions?
+        # Set the children of the root directory to the same permissions as the root directory if so.
+        for root, dirs, files in os.walk(project_root):
+            for d in dirs:
+                os.chmod(os.path.join(root, d), sts.st_mode)
+            for f in files:
+                os.chmod(os.path.join(root, f), sts.st_mode)
+    except Exception as e:  # exit(1) if no os.stat object 'sts' is found
+        if e.__traceback__:
+            __log_error(f"Error setting permissions on {project_root}", exc_info=True)
+            raise  # Re-raise the exception to halt execution
+        else:
+            __log_error(f"Error setting permissions on {project_root}")
+            raise  # Re-raise the exception to halt execution
+
+    finally:  # default path with no exceptions - sts and permissions are set
+        sys.path.extend([  # Add the project root to the system path
+            os.path.abspath(os.path.join(os.path.dirname(__file__), 'src')),
+            os.path.join(os.path.dirname(os.path.realpath(__file__)), '.'),
+            os.path.abspath(os.path.dirname(__file__))
+        ])
+    try:
+        log_dir = os.path.join(os.path.dirname(__file__), 'logs')
+        log_file = os.path.join(log_dir, 'setup.log')
+        return project_root, log_file, log_dir, os.path.abspath(os.path.dirname(__file__))  # Return the project root, log file path, log directory path, and the absolute path of the current directory as a tuple
+
+    except Exception as e:
+        if e.__traceback__:
+            __log_error(f"Error setting up main path: {e}", exc_info=True)
+            raise  # Re-raise the exception to halt execution
+        else:
+            __log_error(f"Error setting up main path: {e}")
+            raise  # Re-raise the exception to halt execution
+
+    finally:  # default path with no exceptions
+        sts_dict = vars(sts) if hasattr(sts, '__dict__') else {}
+        sts_frozen = frozenset(sts_dict.items())  # freeze a dataclass of the sts object
+        return project_root, log_dir, log_file, sts_frozen  
 
 
-class MySettings(BaseModel):
+@dataclass
+class SetupConfig:
+    project_root: str
+    log_dir: str
+    log_file: str
+    sts: frozenset  
+
+def __entry_point():
+    """ Data class which colates the results of the functions above """
+    # logs, shell, stater and pip
+    # project_root, log_dir, log_file, sts = __mainpath()
+    @validator('project_root')
+    def project_root_validator(v):
+        if not os.path.exists(v):
+            raise ValueError(f"Project root {v} does not exist")
+        return v
+    project_root: str = field(default_factory=__mainpath()[0])
+    log_dir: str = field(default_factory=__mainpath()[1])
+    log_file: str = field(default_factory=__mainpath()[2])
+    sts: frozenset = field(default_factory=__mainpath()[3])
+    return SetupConfig(project_root, log_dir, log_file, sts)
+
+
+class BasedModel(BaseModel):
     required_date: date = Field(default_factory=datetime.now().date)
     required_int: int = Field(0, ge=0)  # Set default value here
     state: int = Field(0)  # New field to hold the state value
-
     def __init__(self):
         super().__init__()
         try:
             self.required_int = int(os.getenv("REQUIRED_INT", default=0))
             self.state = int(os.getenv("STATE", default=0))  # Load 'state' from .env file
-            sys.path.extend([
-                os.path.abspath(os.path.join(os.path.dirname(__file__), '..')),
-                os.path.join(os.path.dirname(os.path.realpath(__file__)), '.'), 
-            ])
+            self.required_date = datetime.now().date()
         except Exception as e:
-            log_file = os.path.join(os.path.dirname(__file__), 'logs', 'setup.log')
-            logging.basicConfig(filename=log_file, level=logging.ERROR)  # pre-custom logging
-            logging.error(f"Error loading environment variables: {e}", exc_info=True)
+            if e.__traceback__:
+                __log_error(f"Error initializing BasedModel: {e}", exc_info=True)
+                raise  # Re-raise the exception to halt execution
+            else:
+                __log_error(f"Error initializing BasedModel: {e}")
+                raise  # Re-raise the exception to halt execution
+        finally:  # default path with no exceptions
+            try:
+                # Call other methods or classes to get the required values
+                project_root, log_dir, log_file, sts = __mainpath()
+                appsettings = BasedModel()
+                appsettings.project_root = project_root
+                appsettings.log_dir = log_dir
+                appsettings.log_file = log_file
+                appsettings.sts = sts
+                
+            except Exception as e:
+                if e.__traceback__:
+                    __log_error(f"Error initializing BasedModel: {e}", exc_info=True)
+                    raise  # Re-raise the exception to halt execution
+                else:
+                    __log_error(f"Error initializing BasedModel: {e}")
+                    raise  # Re-raise the exception to halt execution
+
+def main():
+    """Main function"""
+    try:
+        __pipenv()
+    except Exception as e:
+        if e.__traceback__:
+            __log_error(f"Error running private method: {e}", exc_info=True)
             raise  # Re-raise the exception to halt execution
+        else:
+            __log_error(f"Error running private method: {e}")
+            raise  # Re-raise the exception to halt execution
+    finally:  # default path with no exceptions
+        app = __entry_point()
+        return app
 
 
-def mainpath(log_file):
+def validate_appsettings(appsettings):
+    """Validate the appsettings"""
     try:
-        sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))  # is there adequate permission to expand the path?
-    except Exception as e:
-        print(e)
-    finally:
-        sys.path.extend([
-            os.path.abspath(os.path.join(os.path.dirname(__file__), 'src')),
-            os.path.join(os.path.dirname(os.path.realpath(__file__)), '.'),
-            os.path.abspath(os.path.dirname(__file__))
-        ])
-        subprocess.run('pip install -r requirements.txt', shell=True)
-        log_dir = os.path.join(os.path.dirname(__file__), 'logs')
-        os.makedirs(log_dir, exist_ok=True)
-        log_file = os.path.join(log_dir, 'setup.log')
+        project_root, log_file, log_dir, sts = appsettings
 
+        if not os.path.exists(project_root):
+            raise ValueError(f"Project root {project_root} does not exist")
 
-def main(log_file):
-    install_commands = [
-        # 'conda install -c conda-forge jax xonsh',
-        # 'pip install -r requirements.txt',
-        'start /wait /bin/OllamaSetup.exe',
-        'pip install ollama',
-        # ...
-    ]
-    
-    try:
-        mainpath(log_file)
-        run_setup(install_commands)
+        # Additional validation logic for other fields if needed
+
+        return True  # Return True if all validations pass
+
     except Exception as e:
-        logging.basicConfig(filename=log_file, level=logging.ERROR)  # pre-custom logging
-        logging.error(f"Error running setup or expanding path: {e}", exc_info=True)
-        raise  # Re-raise the exception to halt execution
+        __log_error(f"Error validating appsettings: {e}")
+        return False  # Return False if any validation fails
+
 
 if __name__ == "__main__":
     setup(
@@ -148,6 +209,7 @@ if __name__ == "__main__":
             'python-dotenv',
             'numpy',
             'httpx',
+            'semantic-text-splitter'
         ],
         entry_points={
             'console_scripts': [
@@ -155,20 +217,15 @@ if __name__ == "__main__":
             ]
         }
     )
-    main()
-
+else:  # if __name__ != "__main__": - failure-prone 'brittle' main for terminal invocation
     try:
-        entry_point()
-
+        __starter()
     except Exception as e:
-        log_file = os.path.join(os.path.dirname(__file__), 'logs', 'setup.log')
-        logging.basicConfig(filename=log_file, level=logging.ERROR)  # pre-custom logging
-        logging.error(f"Error running setup or expanding path: {e}", exc_info=True)
-        try:
+        if e.__traceback__:
+            __log_error(f"Error installing dependencies: {e}", exc_info=True)
             raise  # Re-raise the exception to halt execution
-        except Exception as e:
-            log_file = os.path.join(os.path.dirname(__file__), 'logs', 'setup.log')
-            logging.basicConfig(filename=log_file, level=logging.ERROR)  # pre-custom logging
-            logging.error("Setup error in setup.py", exc_info=True)
-            print_exc()
-            print(f"Exception: {e}")
+        else:
+            __log_error(f"Error installing dependencies: {e}")
+            raise  # Re-raise the exception to halt execution
+    finally:  # default path with no exceptions
+        app = __entry_point()

@@ -86,4 +86,19 @@ limit({{key}}, {{value}}): Sets a limit on the number of times the specified key
 fn(-{{key}}): Represents a function fn that takes the value of key as an input and removes or subtracts it from the generated content. 
 fn(*{{key}}): Represents a function fn that takes the value of key as an input and repeats a specific property or attribute key times.
 fn(?{{key1}}:{{key2}}): Represents a function fn that takes the values of key1 and key2 as inputs and includes key2 in the generated content if the condition specified by key1 is met.
-"""
+```
+
+
+
+
+### development
+
+to test setup.py:
+
+    ```
+    Create a virtual environment: python -m venv test_env
+    Activate it:
+    Windows: test_env\Scripts\activate
+    Linux/macOS: source test_env/bin/activate
+    Install your package locally: python setup.py install
+    Deactivate the environment when you're done.```

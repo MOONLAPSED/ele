@@ -6,7 +6,7 @@ import subprocess
 import os
 import logging
 from src.lager import Lager
-from setup import MySettings
+
 
 """main handles setting launch and state environment variables and running the runtime of the working application."""
 
@@ -24,10 +24,6 @@ def runtime(lager):
 
 if __name__ == "__main__":
     rt = None
-    settings = MySettings()
-    settings.state = 1  # Set the state to 1 to indicate runtime pydantic validation has completed
-    with open('.env', 'w') as env_file:  # Update state in .env file
-        env_file.write(f"STATE={settings.state}\n")
     try:
         if 'lager' not in locals():
             lager = Lager()  # Create an instance of the logger
@@ -45,7 +41,6 @@ if __name__ == "__main__":
         
     except ImportError:
         print("src not found, try reinstalling the package or running the setup.py script")
-        settings.state = -1 # Set state to -1 to indicate runtime pydantic validation has failed
         sys.exit(1)
     except Exception as e:
         print(e)
@@ -62,9 +57,7 @@ if __name__ == "__main__":
                 # ...                
                 pass
 
-    settings.state = 0  # pydantic validation init and app has achieved runtime, set state to 0 (for possible re-initialization/debugging)
-    with open('.env', 'w') as env_file:  # Update state in .env file
-        env_file.write(f"STATE={settings.state}\n")
+
     sys.exit(0)
 else:
     print("You have no src directory so please run /ele/setup.py directly")

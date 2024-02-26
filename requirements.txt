@@ -9,3 +9,8 @@ ipykernel
 xonsh-jupyter
 httpx
 click
+semantic-text-splitter
+nltk
+spacy
+ipywidgets
+```
