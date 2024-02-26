@@ -1,10 +1,7 @@
-# assume setup.py is in the same directory as src and src/__init__.py
-# assume setup.py has invoked ele/src/lager.py and cognic/src/__init__.py
-# assume setup.py has invoked ele/main.py (this script)
+# assume setup.py is in the same directory as src, __init__.py and src/__init__.py
+# assume setup.py has invoked ele/main.py (this script) amongst other things
 import sys
 import subprocess
-import os
-import logging
 from src.lager import Lager
 
 

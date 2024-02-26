@@ -6,10 +6,7 @@ from setuptools import setup, find_packages
 import subprocess
 import os
 import sys
-from dotenv import load_dotenv
-from src.lager import Lager
 from pydantic import BaseModel, Field, validator
-from traceback import print_exc
 from dataclasses import dataclass, field
 
 # setup.py-only functions, not for runtime or user-facing code
@@ -22,7 +19,7 @@ from dataclasses import dataclass, field
 # 7 BasedModel
 # 8 main
 # 9 validate_appsettings
-# 10 __main__/runtime
+# 10 __main__/runtime(init --> main.py)
 
 def __log_error(message, log_file=os.path.join(os.path.dirname(__file__), 'logs', 'setup.log'), exc_info=False):
     """'Brittle' errors for system init only, not a user-facing error"""
