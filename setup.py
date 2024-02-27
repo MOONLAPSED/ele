@@ -35,7 +35,7 @@ def __shell_error(command, exception, log_file=os.path.join(os.path.dirname(__fi
     return 1  # pre-custom logging
 
 def __starter():  # platform-agnostic .env init
-    """'Brittle' starter for system init only, not a user-facing error"""
+    """'Brittle' starter for system init only, not a user-facing method"""
     if os.name == 'nt':  # Check if on Windows
         subprocess.run('copy /Y .env.example .env', shell=True, check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     elif subprocess.run('cp -f .env.example .env', shell=True, check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE):
@@ -212,20 +212,19 @@ if __name__ == "__main__":
     setup(
         name='ele',
         version='1.0',
-        packages=find_packages(where='src'),
+        packages=find_packages(where='src', exclude=['obs/*', 'fs/*']),
         install_requires=[
             'python-dotenv',
             'pathlib',
             'requests',
             'jupyter',
             'ipykernel',
-            'pandas',
-            'matplotlib',
-            'conda-forge::jax',
-            'conda-forge::xonsh',
-            'python-dotenv',
-            'numpy',
-            'httpx'
+            #'pandas',
+            #'matplotlib',
+            #'numpy',
+            'httpx',
+            #'jax',
+            #'xonsh'
         ],
         entry_points={
             'console_scripts': [

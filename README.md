@@ -2,8 +2,6 @@
 
 **ele**, `_L_E_` or `__ele__` (pronounced 'dunder ele') is a foundational atomic data structure at the heart of a dynamic, gradient-based, and hyperparameter-focused Natural Language Processing (NLP) ecosystem. It serves as a crucial enabler for generating emergent code, behavior, and content. __ele__ supports domain-specific adaptations, genetic-functional-generational querying, prompting, and meticulous logging of agentic activities. Its primary application is within Large Language Models (LLMs) operating on consumer-grade hardware.
 
-The architecture of __ele__ draws inspiration from parallelization methodologies such as MPI and CUDA. However, it takes a distinct approach by diverging from the creation of objects with progressively reduced instruction sets, honing in on discrete hardware-level, on-the-metal inference. Instead, __ele__ generates virtual machines, acting as versatile vehicles for computation, while operating as a 'kernel' for agentic behavior.
-
 ele is in developer-only, construction mode. Uncritical-use is not at all recommended.
 
 ### element+procedural_text+logic:
@@ -12,6 +10,8 @@ ele is in developer-only, construction mode. Uncritical-use is not at all recomm
 
 ### feb 24 update
 Microsoft has released the amazing UFO (don't like the name, haha) framework which allows, using vision+language processing, an addressable interface for agentic interaction within Windows. ele will only instantiate such agents, any agents, within the runtime windows ${{SANDBOX}}, {{SANDBOX|WSB}}. This is a very exciting development and will be the focus of the next major release of ele.
+
+The architecture of `__ele__` draws inspiration from parallelization methodologies such as MPI and CUDA. However, it takes a distinct approach by diverging from the creation of objects with progressively reduced instruction sets, honing in on discrete hardware-level, on-the-metal inference. Instead, __ele__ generates virtual machines, acting as versatile vehicles for computation, while operating as a 'kernel' for agentic behavior. Inspiration also drawn from code interpreter and AGiXT (on github), with the next module after UFO to be ele Obsidian - `cognosis` kb. Following that will come the 'release' version of `cognOS` which brings ele + cognosis to wider, non-developer audiences.
 
 ### why?
 
@@ -26,20 +26,21 @@ Ele is a data structure designed to represent and evolve concepts within NLP-pow
 
 * clone to your local machine, set local $PATH manually in cfg.wsb and scoop.ps1.
 * run cfg.wsb to open container
-* inside container; try `boxy.bat` to init the container installation - if it fails then windows probably tried to artifact something and you need to exit and restart the whole container
+* inside container; try `boxy.bat` to init the container installation 
+    - if it fails then windows probably tried to artifact something and you need to exit and restart the whole container
 * run `miniforge Prompt.lnk` to open a conda environment 
     - conda create -n 3ten python=3.10
     - cmd.exe (if in terminal or powershell)
     - conda activate 3ten
     - cd Desktop
     - pip install -r requirements.txt OR:
-        - to test setup.py:```
+        - to test setup.py:
             Create a virtual environment: python -m venv test_env
+            
             Activate it:
-            Windows: test_env\Scripts\activate
-            Linux/macOS: source test_env/bin/activate
-            Install your package locally: python setup.py install
-            Deactivate the environment when you're done.``` 
+            Windows: test_env\Scripts\activate/Linux/macOS: source test_env/bin/activate
+
+            Install package locally: python setup.py install
 
 ### ::ele pseudo-markup+procedural_text+logic:
 
