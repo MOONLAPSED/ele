@@ -18,6 +18,9 @@ from setuptools import setup, find_packages
 import subprocess
 import os
 import sys
+from pydantic import BaseModel, Field, validator
+from dataclasses import dataclass, field
+
 
 def __log_error(message, log_file=os.path.join(os.path.dirname(__file__), 'logs', 'setup.log'), exc_info=False):
     """'Brittle' errors for system init only, not a user-facing error"""
@@ -31,7 +34,7 @@ def __shell_error(command, exception, log_file=os.path.join(os.path.dirname(__fi
     logging.error("Error executing command: %s", command, exc_info=exception)
     return 1  # pre-custom logging
 
-def __starter():
+def __starter():  # platform-agnostic .env init
     """'Brittle' starter for system init only, not a user-facing error"""
     if os.name == 'nt':  # Check if on Windows
         subprocess.run('copy /Y .env.example .env', shell=True, check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
@@ -39,7 +42,7 @@ def __starter():
         pass
     subprocess.run('pip install requirements.txt', shell=True, check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE) 
 
-def __pipenv():
+def __pipenv():  # wraper for __starter()
     try:
         __starter()    
     except Exception as e:
@@ -51,12 +54,8 @@ def __pipenv():
             raise  # Re-raise the exception to halt execution
     return 0  # pre-custom logging
 
-from pydantic import BaseModel, Field, validator
-from dataclasses import dataclass, field
 
-
-
-def __mainpath():
+def __mainpath() -> tuple:
     project_root = os.path.abspath(os.path.dirname(__file__))  # Get project root
 
     try:
@@ -107,10 +106,10 @@ class SetupConfig:
     log_file: str
     sts: frozenset  
 
-def __entry_point():
+def __entry_point():  # returns SetupConfig class object for BaseModel-use
     """ Data class which colates the results of the functions above """
     # logs, shell, stater and pip
-    # project_root, log_dir, log_file, sts = __mainpath()
+    project_root, log_dir, log_file, sts = __mainpath()  # wraps __mainpath()
     @validator('project_root')
     def project_root_validator(v):
         if not os.path.exists(v):
@@ -170,7 +169,7 @@ def main():
             __log_error(f"Error running private method: {e}")
             raise  # Re-raise the exception to halt execution
     finally:  # default path with no exceptions
-        app = __entry_point()
+        app = __entry_point()  # wrapper for __entrypoints
         return app
 
 
@@ -190,6 +189,24 @@ def validate_appsettings(appsettings):
         __log_error(f"Error validating appsettings: {e}")
         return False  # Return False if any validation fails
 
+def based_settings() -> tuple:
+    appsettings = main()  # wrapper for app / main()
+    if validate_appsettings(appsettings):  # wrapper for validate_appsettings()
+        print("Appsettings are valid")
+        based_model = BasedModel()
+        based_model.project_root = appsettings.project_root
+        based_model.log_dir = appsettings.log_dir
+        based_model.log_file = appsettings.log_file
+        based_model.sts = appsettings.sts
+        return based_model, appsettings
+
+def based_app():
+    based_settings()
+    based_app = based_settings()[0]
+    if based_app.project_root == based_settings()[1].project_root:
+        return based_app
+    else:
+        return 1
 
 if __name__ == "__main__":
     setup(
@@ -216,6 +233,13 @@ if __name__ == "__main__":
             ]
         }
     )
+    while based_app != 1:
+        based_app()
+    
+    if based_app == 1:
+        __log_error(f"Error running based_app: {based_app}")
+        raise ValueError(f"Error running based_app: {based_app}")
+    
 else:  # if __name__ != "__main__": - failure-prone 'brittle' main for terminal invocation
     try:
         __starter()
