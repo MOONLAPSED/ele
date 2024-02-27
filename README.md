@@ -1,6 +1,10 @@
 # ele
 
-_ele_ is an 'atomic' data structure pivotal to a dynamic, gradient-based and hyperparameter-focused NLP ecosystem. It facilitates the generation of emergent code, behavior, and content, along with domain-specific adaptations, genetic-functional-generational querying and prompting, and detailed logging of agentic activities, primarily for Large Language Models (LLMs) running on consumer grade hardware.
+_ele_, or __ele__ (pronounced 'dunder ele') is a foundational atomic data structure at the heart of a dynamic, gradient-based, and hyperparameter-focused Natural Language Processing (NLP) ecosystem. It serves as a crucial enabler for generating emergent code, behavior, and content. __ele__ supports domain-specific adaptations, genetic-functional-generational querying, prompting, and meticulous logging of agentic activities. Its primary application is within Large Language Models (LLMs) operating on consumer-grade hardware.
+
+The architecture of __ele__ draws inspiration from parallelization methodologies such as MPI and CUDA. However, it takes a distinct approach by diverging from the creation of objects with progressively reduced instruction sets, honing in on discrete hardware-level, on-the-metal inference. Instead, __ele__ innovatively generates virtual machines, acting as versatile vehicles for computation.
+
+ele is in developer-only, construction mode. Uncritical-use is not at all recommended.
 
 ### element+procedural_text+logic:
 
@@ -28,6 +32,15 @@ Ele is a data structure designed to represent and evolve concepts within NLP-pow
     - cmd.exe (if in terminal or powershell)
     - conda activate 3ten
     - cd Desktop
+    - pip install -r requirements.txt OR:
+        - to test setup.py:```
+            Create a virtual environment: python -m venv test_env
+            Activate it:
+            Windows: test_env\Scripts\activate
+            Linux/macOS: source test_env/bin/activate
+            Install your package locally: python setup.py install
+            Deactivate the environment when you're done.``` 
+
 ### ::ele pseudo-markup+procedural_text+logic:
 
 ```
@@ -90,18 +103,3 @@ fn(-{{key}}): Represents a function fn that takes the value of key as an input a
 fn(*{{key}}): Represents a function fn that takes the value of key as an input and repeats a specific property or attribute key times.
 fn(?{{key1}}:{{key2}}): Represents a function fn that takes the values of key1 and key2 as inputs and includes key2 in the generated content if the condition specified by key1 is met.
 ```
-
-
-
-
-### development
-
-to test setup.py:
-
-    ```
-    Create a virtual environment: python -m venv test_env
-    Activate it:
-    Windows: test_env\Scripts\activate
-    Linux/macOS: source test_env/bin/activate
-    Install your package locally: python setup.py install
-    Deactivate the environment when you're done.```
