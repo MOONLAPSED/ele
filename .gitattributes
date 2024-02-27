@@ -2,6 +2,7 @@
 "apps - Shortcut.lnk" -crlf -diff -merge
 "Miniforge Prompt.lnk" export-subst
 "apps - Shortcut.lnk" export-subst
-
+"Scoop Apps - Shortcut.lnk" -crlf -diff -merge
+"Scoop Apps - Shortcut.lnk" export-subst
 # "Miniforge Prompt.lnk" -crlf -diff -merge: This line specifies that Git should treat "Miniforge Prompt.lnk" as a binary file, disable automatic line ending conversion (-crlf), and disable textual diffing and merging (-diff -merge).
 # "Miniforge Prompt.lnk" export-subst: This line specifies that the file will undergo substitution of placeholders (like $Id$) with information about the commit during export operations.

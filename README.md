@@ -23,8 +23,11 @@ Ele is a data structure designed to represent and evolve concepts within NLP-pow
 * clone to your local machine, set local $PATH manually in cfg.wsb and scoop.ps1.
 * run cfg.wsb to open container
 * inside container; try `boxy.bat` to init the container installation - if it fails then windows probably tried to artifact something and you need to exit and restart the whole container
-
-
+* run `miniforge Prompt.lnk` to open a conda environment 
+    - conda create -n 3ten python=3.10
+    - cmd.exe (if in terminal or powershell)
+    - conda activate 3ten
+    - cd Desktop
 ### ::ele pseudo-markup+procedural_text+logic:
 
 ```

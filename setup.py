@@ -1,14 +1,5 @@
 #!/usr/bin/env python
 
-from datetime import datetime, date
-import logging
-from setuptools import setup, find_packages
-import subprocess
-import os
-import sys
-from pydantic import BaseModel, Field, validator
-from dataclasses import dataclass, field
-
 # setup.py-only functions, not for runtime or user-facing code
 # 1. __log_error__
 # 2. __shell_error__
@@ -20,6 +11,13 @@ from dataclasses import dataclass, field
 # 8 main
 # 9 validate_appsettings
 # 10 __main__/runtime(init --> main.py)
+
+from datetime import datetime, date
+import logging
+from setuptools import setup, find_packages
+import subprocess
+import os
+import sys
 
 def __log_error(message, log_file=os.path.join(os.path.dirname(__file__), 'logs', 'setup.log'), exc_info=False):
     """'Brittle' errors for system init only, not a user-facing error"""
@@ -52,6 +50,11 @@ def __pipenv():
             __log_error(f"Error installing pipenv: {e}")
             raise  # Re-raise the exception to halt execution
     return 0  # pre-custom logging
+
+from pydantic import BaseModel, Field, validator
+from dataclasses import dataclass, field
+
+
 
 def __mainpath():
     project_root = os.path.abspath(os.path.dirname(__file__))  # Get project root
@@ -205,8 +208,7 @@ if __name__ == "__main__":
             'conda-forge::xonsh',
             'python-dotenv',
             'numpy',
-            'httpx',
-            'semantic-text-splitter'
+            'httpx'
         ],
         entry_points={
             'console_scripts': [
@@ -226,3 +228,5 @@ else:  # if __name__ != "__main__": - failure-prone 'brittle' main for terminal 
             raise  # Re-raise the exception to halt execution
     finally:  # default path with no exceptions
         app = __entry_point()
+
+# write a fucntion for cloning UFO and populating the *.lnk files/shortcuts
