@@ -1,8 +1,8 @@
 # ele
 
-_ele_, or __ele__ (pronounced 'dunder ele') is a foundational atomic data structure at the heart of a dynamic, gradient-based, and hyperparameter-focused Natural Language Processing (NLP) ecosystem. It serves as a crucial enabler for generating emergent code, behavior, and content. __ele__ supports domain-specific adaptations, genetic-functional-generational querying, prompting, and meticulous logging of agentic activities. Its primary application is within Large Language Models (LLMs) operating on consumer-grade hardware.
+_ele_, or "__ele__" (pronounced 'dunder ele') is a foundational atomic data structure at the heart of a dynamic, gradient-based, and hyperparameter-focused Natural Language Processing (NLP) ecosystem. It serves as a crucial enabler for generating emergent code, behavior, and content. __ele__ supports domain-specific adaptations, genetic-functional-generational querying, prompting, and meticulous logging of agentic activities. Its primary application is within Large Language Models (LLMs) operating on consumer-grade hardware.
 
-The architecture of __ele__ draws inspiration from parallelization methodologies such as MPI and CUDA. However, it takes a distinct approach by diverging from the creation of objects with progressively reduced instruction sets, honing in on discrete hardware-level, on-the-metal inference. Instead, __ele__ innovatively generates virtual machines, acting as versatile vehicles for computation.
+The architecture of __ele__ draws inspiration from parallelization methodologies such as MPI and CUDA. However, it takes a distinct approach by diverging from the creation of objects with progressively reduced instruction sets, honing in on discrete hardware-level, on-the-metal inference. Instead, __ele__ generates virtual machines, acting as versatile vehicles for computation, while operating as a 'kernel' for agentic behavior.
 
 ele is in developer-only, construction mode. Uncritical-use is not at all recommended.
 
