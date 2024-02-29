@@ -1,16 +1,21 @@
 #!/usr/bin/env python
 
 # setup.py-only functions, not for runtime or user-facing code
+# +--------------------+ private setup.py-only funcs
 # 1. __log_error__
 # 2. __shell_error__
 # 3. __starter__
+# +--------------------+ setup.py-only funcs
 # 4 __pipenv__
 # 5 __mainpath__
-# 6 __entry_point__/pre-runtime-endpoint
+# 6 SetupConfig/__entry_point__/pre-runtime-endpoint
+# +--------------------+ Pydantic app and main. Global-scope functions.
 # 7 BasedModel
 # 8 main
-# 9 validate_appsettings
-# 10 __main__/runtime(init --> main.py)
+# 9 ValidateAppsettings
+# 10 BasedSettings
+# 11 BasedApp
+# 12 __main__/runtime(init --> main.py)
 
 from datetime import datetime, date
 import logging
@@ -41,7 +46,7 @@ def __starter():  # platform-agnostic .env init
     elif subprocess.run('cp -f .env.example .env', shell=True, check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE):
         pass
     subprocess.run('pip install requirements.txt', shell=True, check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE) 
-
+# +--------------------+
 def __pipenv():  # wraper for __starter()
     try:
         __starter()    
@@ -56,8 +61,8 @@ def __pipenv():  # wraper for __starter()
 
 
 def __mainpath() -> tuple:
+    global project_root
     project_root = os.path.abspath(os.path.dirname(__file__))  # Get project root
-
     try:
         sts=os.stat_result(os.stat(project_root))  # is there adequate permission to set permissions?
         # Set the children of the root directory to the same permissions as the root directory if so.
@@ -81,7 +86,9 @@ def __mainpath() -> tuple:
             os.path.abspath(os.path.dirname(__file__))
         ])
     try:
+        global log_dir
         log_dir = os.path.join(os.path.dirname(__file__), 'logs')
+        global log_file
         log_file = os.path.join(log_dir, 'setup.log')
         return project_root, log_file, log_dir, os.path.abspath(os.path.dirname(__file__))  # Return the project root, log file path, log directory path, and the absolute path of the current directory as a tuple
 
@@ -95,9 +102,10 @@ def __mainpath() -> tuple:
 
     finally:  # default path with no exceptions
         sts_dict = vars(sts) if hasattr(sts, '__dict__') else {}
+        global sts_frozen
         sts_frozen = frozenset(sts_dict.items())  # freeze a dataclass of the sts object
         return project_root, log_dir, log_file, sts_frozen  
-
+# +--------------------+
 
 @dataclass
 class SetupConfig:
@@ -173,7 +181,7 @@ def main():
         return app
 
 
-def validate_appsettings(appsettings):
+def ValidateAppsettings(appsettings):
     """Validate the appsettings"""
     try:
         project_root, log_file, log_dir, sts = appsettings
@@ -189,9 +197,9 @@ def validate_appsettings(appsettings):
         __log_error(f"Error validating appsettings: {e}")
         return False  # Return False if any validation fails
 
-def based_settings() -> tuple:
+def BasedSettings() -> tuple:
     appsettings = main()  # wrapper for app / main()
-    if validate_appsettings(appsettings):  # wrapper for validate_appsettings()
+    if ValidateAppsettings(appsettings):  # wrapper for validate_appsettings()
         print("Appsettings are valid")
         based_model = BasedModel()
         based_model.project_root = appsettings.project_root
@@ -200,10 +208,10 @@ def based_settings() -> tuple:
         based_model.sts = appsettings.sts
         return based_model, appsettings
 
-def based_app():
-    based_settings()
-    based_app = based_settings()[0]
-    if based_app.project_root == based_settings()[1].project_root:
+def BasedApp():
+    BasedSettings()
+    based_app = BasedSettings()[0]
+    if based_app.project_root == BasedSettings()[1].project_root:
         return based_app
     else:
         return 1
@@ -232,12 +240,12 @@ if __name__ == "__main__":
             ]
         }
     )
-    while based_app != 1:
-        based_app()
+    while BasedApp != 1:
+        BasedApp()
     
-    if based_app == 1:
-        __log_error(f"Error running based_app: {based_app}")
-        raise ValueError(f"Error running based_app: {based_app}")
+    if BasedApp == 1:
+        __log_error(f"Error running based_app: {BasedApp}")
+        raise ValueError(f"Error running based_app: {BasedApp}")
     
 else:  # if __name__ != "__main__": - failure-prone 'brittle' main for terminal invocation
     try:

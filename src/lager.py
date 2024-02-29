@@ -10,7 +10,7 @@ from dotenv import load_dotenv
 import json
 
 """
-The Lager class provides centralized logging configuration and management for your Python application.
+The Lager class provides centralized logging configuration and management for ele.
 
 **Key Features**
 
