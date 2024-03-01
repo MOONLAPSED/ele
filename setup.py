@@ -240,6 +240,17 @@ if __name__ == "__main__":
             ]
         }
     )
+    try:  # UFO and lit-llm git clone
+        subprocess.run('git submodule init')
+        subprocess.run('git submodule update --recursive')
+    except Exception as e:
+        if e.__traceback__:
+            __log_error(f"Error cloning UFO and lit-llm: {e}", exc_info=True)
+            raise  # Re-raise the exception to halt execution
+        else:
+            __log_error(f"Error cloning UFO and lit-llm: {e}")
+            raise  # Re-raise the exception to halt execution
+
     while BasedApp != 1:
         BasedApp()
     
@@ -259,5 +270,3 @@ else:  # if __name__ != "__main__": - failure-prone 'brittle' main for terminal 
             raise  # Re-raise the exception to halt execution
     finally:  # default path with no exceptions
         app = __entry_point()
-
-# write a fucntion for cloning UFO and populating the *.lnk files/shortcuts
