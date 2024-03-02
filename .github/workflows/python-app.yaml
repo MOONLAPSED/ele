@@ -26,19 +26,27 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
+
       - name: Navigate to directory with main.py and print current directory
         run: |
           cd ${{ github.workspace }}
           pwd
           ls -la
+
       - name: Create log file
         run: touch logs/python-app.log
 
       - name: python-main
         run: |
           cd ${{ github.workspace }}
-          python setup.py install 2>&1 | tee logs/python-app.log
-          echo "Archived contents of python-app.log."
+          python -m venv venv
+          source venv/bin/activate
+          python -m pip install .
+          python -m setup.py install
+
+      - name: Deactivate virtual environment
+        run: deactivate
+
       - name: Archive test output as artifact
         if: always()
         uses: actions/upload-artifact@v2
