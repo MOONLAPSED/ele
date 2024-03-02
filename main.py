@@ -1,5 +1,6 @@
 # assume setup.py is in the same directory as src, __init__.py and src/__init__.py
 # assume setup.py has invoked ele/main.py (this script) amongst other things
+import os
 import sys
 import subprocess
 from src.lager import Lager  # capital "L"
@@ -22,15 +23,21 @@ def hash():
         else:
             raise  # Re-raise other Git errors for debugging
 
+@dataclass
+class SetupConfig:
+    project_root: str = os.getenv('PROJECT_ROOT')
+    log_dir: str = os.getenv('LOG_DIR')
+    log_file: str = os.getenv('LOG_FILE')
 
 def runtime():
     """runtime sets the environment variables and runs the application."""
     lager = Lager()
     lager.Lager.validate()  # Update and validate configuration
-    
+
     try:
         # Validate and retrieve a branch logger for main.py
         ml = lager.Lager.branch_logger('main') # Retrieve a branch logger for main.py
+        globals()['ml'] = ml  # Store in globals()
         return ml
     except:
         lager.Lager.error("Failed to retrieve Lager() branch.")

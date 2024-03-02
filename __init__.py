@@ -1,8 +1,5 @@
 # ele/__init__.py
 from .src.lager import Lager
+from main import main
 
-def entry_point():
-    # ... 
-    lager = Lager()
-    globals()['lager'] = lager  # Store in globals()
-    return lager 
+__all__ = ['Lager', 'main']

@@ -17,206 +17,116 @@
 # 11 BasedApp
 # 12 __main__/runtime(init --> main.py)
 
+
 from datetime import datetime, date
-import logging
 from setuptools import setup, find_packages
 import subprocess
 import os
 import sys
-from pydantic import BaseModel, Field, validator
-from dataclasses import dataclass, field
+import logging
+import logging.config
 
+try:
+    # Initialize setup logger for setup.py
+    logging_config = {
+        'version': 1,
+        'disable_existing_loggers': False,
+        'handlers': {
+            'file_handler': {
+                'class': 'logging.handlers.RotatingFileHandler',
+                'filename': os.path.abspath(os.path.join(os.path.dirname(__file__), 'logs', 'setup.log')),
+                'maxBytes': 10*1024*1024,  # 10MB 
+                'backupCount': 5,
+                'formatter': 'standard'
+            },
+        },
+        'formatters': {
+            'standard': {
+                'format': '[%(levelname)s]%(asctime)s||%(name)s: %(message)s',
+                'datefmt': '%Y-%m-%d~%H:%M:%S%z'
+            },
+        },
+        'root': {
+            'level': logging.INFO,
+            'handlers': ['file_handler']
+        },
+    }
+    logging.config.dictConfig(logging_config)
+except Exception as e:
+    # Basic logging setup for setup.py
+    log_file_path = os.path.abspath(os.path.join(os.path.dirname(__file__), 'logs', 'setup.log'))
+    logging.basicConfig(filename=log_file_path, level=logging.INFO)
+    logging.error(f"Error setting up logging configuration: {e}")
+    raise SystemExit(1)  # Indicate installation failure
 
-def __log_error(message, log_file=os.path.join(os.path.dirname(__file__), 'logs', 'setup.log'), exc_info=False):
-    """'Brittle' errors for system init only, not a user-facing error"""
-    logging.basicConfig(filename=log_file, level=logging.ERROR)
-    logging.error(message, exc_info=exc_info)
-    return 1  # pre-custom logging
-
-def __shell_error(command, exception, log_file=os.path.join(os.path.dirname(__file__), 'logs', 'setup.log')):
-    """'Brittle' shell errors for system init only, not a user-facing error"""
-    logging.basicConfig(filename=log_file, level=logging.ERROR)
-    logging.error("Error executing command: %s", command, exc_info=exception)
-    return 1  # pre-custom logging
-
-def __starter():  # platform-agnostic .env init
-    """'Brittle' starter for system init only, not a user-facing method"""
-    if os.name == 'nt':  # Check if on Windows
-        subprocess.run('copy /Y .env.example .env', shell=True, check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    elif subprocess.run('cp -f .env.example .env', shell=True, check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE):
-        pass
-    subprocess.run('pip install requirements.txt', shell=True, check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE) 
-# +--------------------+
-def __pipenv():  # wraper for __starter()
-    try:
-        __starter()    
-    except Exception as e:
-        if e.__traceback__:
-            __log_error(f"Error installing pipenv: {e}", exc_info=True)
-            raise  # Re-raise the exception to halt execution
-        else:
-            __log_error(f"Error installing pipenv: {e}")
-            raise  # Re-raise the exception to halt execution
-    return 0  # pre-custom logging
 
 
 def __mainpath() -> tuple:
-    global project_root
-    project_root = os.path.abspath(os.path.dirname(__file__))  # Get project root
+    """Determines project paths, adjusts permissions, sets env variables."""
+
+    project_root = os.path.abspath(os.path.dirname(__file__))
+    os.environ['PROJECT_ROOT'] = project_root
+
     try:
-        sts=os.stat_result(os.stat(project_root))  # is there adequate permission to set permissions?
-        # Set the children of the root directory to the same permissions as the root directory if so.
+        sts = os.stat(project_root)
         for root, dirs, files in os.walk(project_root):
             for d in dirs:
                 os.chmod(os.path.join(root, d), sts.st_mode)
             for f in files:
                 os.chmod(os.path.join(root, f), sts.st_mode)
-    except Exception as e:  # exit(1) if no os.stat object 'sts' is found
-        if e.__traceback__:
-            __log_error(f"Error setting permissions on {project_root}", exc_info=True)
-            raise  # Re-raise the exception to halt execution
-        else:
-            __log_error(f"Error setting permissions on {project_root}")
-            raise  # Re-raise the exception to halt execution
-
+    except PermissionError as e:
+        logging.error(f"Error setting permissions on {project_root}: {e}")
+        raise SystemExit(1)  # Indicate installation failure
     finally:  # default path with no exceptions - sts and permissions are set
         sys.path.extend([  # Add the project root to the system path
             os.path.abspath(os.path.join(os.path.dirname(__file__), 'src')),
             os.path.join(os.path.dirname(os.path.realpath(__file__)), '.'),
             os.path.abspath(os.path.dirname(__file__))
         ])
-    try:
-        global log_dir
+    try:  
         log_dir = os.path.join(os.path.dirname(__file__), 'logs')
-        global log_file
+        os.environ['LOG_DIR'] = log_dir
+    except Exception as e:  
+        logger.error(f"Error setting LOG_DIR: {e}", exc_info=True)
+        raise SystemExit(1) 
+
+    try:  
         log_file = os.path.join(log_dir, 'setup.log')
-        return project_root, log_file, log_dir, os.path.abspath(os.path.dirname(__file__))  # Return the project root, log file path, log directory path, and the absolute path of the current directory as a tuple
+        os.environ['LOG_FILE'] = log_file
+    except Exception as e:  
+        logger.error(f"Error setting LOG_FILE: {e}", exc_info=True)
+        raise SystemExit(1) 
 
-    except Exception as e:
-        if e.__traceback__:
-            __log_error(f"Error setting up main path: {e}", exc_info=True)
-            raise  # Re-raise the exception to halt execution
-        else:
-            __log_error(f"Error setting up main path: {e}")
-            raise  # Re-raise the exception to halt execution
+    return project_root, log_dir, log_file, sts
 
-    finally:  # default path with no exceptions
-        sts_dict = vars(sts) if hasattr(sts, '__dict__') else {}
-        global sts_frozen
-        sts_frozen = frozenset(sts_dict.items())  # freeze a dataclass of the sts object
-        return project_root, log_dir, log_file, sts_frozen  
-# +--------------------+
+def __starter():
+    """Platform-agnostic .env initialization"""
+    if os.name == 'nt':
+        subprocess.run('copy /Y .env.example .env', shell=True, check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    elif os.name == 'posix' or os.name == 'mac': 
+        subprocess.run('cp -f .env.example .env', shell=True, check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
-@dataclass
-class SetupConfig:
-    project_root: str
-    log_dir: str
-    log_file: str
-    sts: frozenset  
-
-def __entry_point():  # returns SetupConfig class object for BaseModel-use
-    """ Data class which colates the results of the functions above """
-    # logs, shell, stater and pip
-    project_root, log_dir, log_file, sts = __mainpath()  # wraps __mainpath()
-    @validator('project_root')
-    def project_root_validator(v):
-        if not os.path.exists(v):
-            raise ValueError(f"Project root {v} does not exist")
-        return v
-    project_root: str = field(default_factory=__mainpath()[0])
-    log_dir: str = field(default_factory=__mainpath()[1])
-    log_file: str = field(default_factory=__mainpath()[2])
-    sts: frozenset = field(default_factory=__mainpath()[3])
-    return SetupConfig(project_root, log_dir, log_file, sts)
-
-
-class BasedModel(BaseModel):
-    required_date: date = Field(default_factory=datetime.now().date)
-    required_int: int = Field(0, ge=0)  # Set default value here
-    state: int = Field(0)  # New field to hold the state value
-    def __init__(self):
-        super().__init__()
-        try:
-            self.required_int = int(os.getenv("REQUIRED_INT", default=0))
-            self.state = int(os.getenv("STATE", default=0))  # Load 'state' from .env file
-            self.required_date = datetime.now().date()
-        except Exception as e:
-            if e.__traceback__:
-                __log_error(f"Error initializing BasedModel: {e}", exc_info=True)
-                raise  # Re-raise the exception to halt execution
-            else:
-                __log_error(f"Error initializing BasedModel: {e}")
-                raise  # Re-raise the exception to halt execution
-        finally:  # default path with no exceptions
-            try:
-                # Call other methods or classes to get the required values
-                project_root, log_dir, log_file, sts = __mainpath()
-                appsettings = BasedModel()
-                appsettings.project_root = project_root
-                appsettings.log_dir = log_dir
-                appsettings.log_file = log_file
-                appsettings.sts = sts
-                
-            except Exception as e:
-                if e.__traceback__:
-                    __log_error(f"Error initializing BasedModel: {e}", exc_info=True)
-                    raise  # Re-raise the exception to halt execution
-                else:
-                    __log_error(f"Error initializing BasedModel: {e}")
-                    raise  # Re-raise the exception to halt execution
-
-def main():
-    """Main function"""
+def __pipenv():
+    """Wrapper for __starter(), handles potential errors"""
     try:
-        __pipenv()
+        __starter()
     except Exception as e:
-        if e.__traceback__:
-            __log_error(f"Error running private method: {e}", exc_info=True)
-            raise  # Re-raise the exception to halt execution
-        else:
-            __log_error(f"Error running private method: {e}")
-            raise  # Re-raise the exception to halt execution
-    finally:  # default path with no exceptions
-        app = __entry_point()  # wrapper for __entrypoints
-        return app
+        logger.error(f"Error installing dependencies: {e}", exc_info=True)
+        raise SystemExit(1) 
 
 
-def ValidateAppsettings(appsettings):
-    """Validate the appsettings"""
-    try:
-        project_root, log_file, log_dir, sts = appsettings
 
-        if not os.path.exists(project_root):
-            raise ValueError(f"Project root {project_root} does not exist")
 
-        # Additional validation logic for other fields if needed
-
-        return True  # Return True if all validations pass
-
-    except Exception as e:
-        __log_error(f"Error validating appsettings: {e}")
-        return False  # Return False if any validation fails
-
-def BasedSettings() -> tuple:
-    appsettings = main()  # wrapper for app / main()
-    if ValidateAppsettings(appsettings):  # wrapper for validate_appsettings()
-        print("Appsettings are valid")
-        based_model = BasedModel()
-        based_model.project_root = appsettings.project_root
-        based_model.log_dir = appsettings.log_dir
-        based_model.log_file = appsettings.log_file
-        based_model.sts = appsettings.sts
-        return based_model, appsettings
-
-def BasedApp():
-    BasedSettings()
-    based_app = BasedSettings()[0]
-    if based_app.project_root == BasedSettings()[1].project_root:
-        return based_app
-    else:
-        return 1
 
 if __name__ == "__main__":
+    try:
+        __pipenv()
+        subprocess.run('pip install -r requirements.txt', shell=True, check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE) 
+
+    except subprocess.CalledProcessError as e:
+        logger.error(f"Error during setup: {e}")
+        raise SystemExit(1)
+
     setup(
         name='ele',
         version='1.0',
@@ -227,12 +137,7 @@ if __name__ == "__main__":
             'requests',
             'jupyter',
             'ipykernel',
-            #'pandas',
-            #'matplotlib',
-            #'numpy',
-            'httpx',
-            #'jax',
-            #'xonsh'
+            # ... other dependencies from your requirements.txt
         ],
         entry_points={
             'console_scripts': [
@@ -241,21 +146,17 @@ if __name__ == "__main__":
         }
     )
 
-    while BasedApp != 1:
-        BasedApp()
-    if BasedApp == 1:
-        __log_error(f"Error running based_app: {BasedApp}")
-        raise ValueError(f"Error running based_app: {BasedApp}")
-    
 else:  # if __name__ != "__main__": - failure-prone 'brittle' main for terminal invocation
     try:
         __starter()
     except Exception as e:
         if e.__traceback__:
-            __log_error(f"Error installing dependencies: {e}", exc_info=True)
+            logger.error(f"Error initializing .env: {e}", exc_info=True)
             raise  # Re-raise the exception to halt execution
         else:
-            __log_error(f"Error installing dependencies: {e}")
+            logger.error(f"Error initializing .env: {e}")
             raise  # Re-raise the exception to halt execution
     finally:  # default path with no exceptions
-        app = __entry_point()
+        __mainpath()
+        __pipenv()
+        pass

@@ -16,6 +16,7 @@ config.py
 /plugins/*
 /ele.egg-info/*
 test_env/*
+*errbot.log
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

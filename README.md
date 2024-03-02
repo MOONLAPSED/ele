@@ -33,7 +33,7 @@ Ele is a data structure designed to represent and evolve concepts within NLP-pow
     - cd Desktop
     - .\"Miniforge Prompt.lnk"
     - conda create -n 3ten python=3.10
-    - cond init
+    - conda init
     - exit
     - cmd.exe (from inside windows terminal)
     - cd Desktop
@@ -48,9 +48,12 @@ Ele is a data structure designed to represent and evolve concepts within NLP-pow
         pip install -r requirements.txt
     - pip install open-interpreter
     - pip install litellm
+    - pip install instructor
     - pip install errbot
     - errbot --init
     - errbot
+        + outside virtual machine, we grant our boxy VM the ability to change its own git dir `git config --global --add safe.directory C:/Users/WDAGUtilityAccount/Desktop/`
+    
 
 ### ::ele pseudo-markup+procedural_text+logic:
 
