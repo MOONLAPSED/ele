@@ -37,7 +37,7 @@ jobs:
       - name: python-main
         run: |
           cd ${{ github.workspace }}
-          python setup.py 2>&1 | tee logs/python-app.log
+          python setup.py install 2>&1 | tee logs/python-app.log
           echo "Archived contents of python-app.log."
       - name: Archive test output as artifact
         if: always()
