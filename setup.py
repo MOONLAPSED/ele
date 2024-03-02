@@ -6,8 +6,7 @@ import sys
 import logging
 import logging.config
 
-# Configure logging
-try:
+try:  # Configure setup logging
     logging_config = {
         'version': 1,
         'disable_existing_loggers': False,
@@ -37,7 +36,10 @@ except Exception as e:
     log_file_path = os.path.abspath(os.path.join(os.path.dirname(__file__), 'logs', 'setup.log'))
     logging.basicConfig(filename=log_file_path, level=logging.INFO)
     logging.error(f"Error setting up logging configuration: {e}")
-    raise SystemExit(1)  # Indicate installation failure
+    raise SystemExit(1)  # Indicate installation failure (no logging)
+finally:
+    logging.info("Setup-logging initiated.")
+
 
 def __mainpath() -> tuple:
     """Determines project paths, adjusts permissions, sets env variables."""
@@ -81,20 +83,24 @@ def __starter():
     """Platform-agnostic .env initialization"""  # agnostic but only works on windows, lol
     if os.name == 'nt':
         subprocess.run('copy /Y .env.example .env', shell=True, check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-
-
-def __pipenv():
+    subprocess.run('pip install -r requirements.txt', shell=True, check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    
+def __pipenv() -> tuple:
     """Wrapper for __starter(), handles potential errors"""
     try:
         __starter()
+        mp = __mainpath()
+        return mp
     except Exception as e:
         logging.error(f"Error installing dependencies: {e}", exc_info=True)
         raise SystemExit(1)
 
 if __name__ == "__main__":
     try:
-        __pipenv()
-        subprocess.run('pip install -r requirements.txt', shell=True, check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        mp = __pipenv()
+        logging.info("Dependencies installed.\n|main_path:|\n{mp}")
+        # caddy/GO initialization & ipykernel initialization & jupyter notebook+server initialization
+        # subprocess.run('python -m jupyter -dir .', shell=True, check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     except subprocess.CalledProcessError as e:
         logging.error(f"Error during setup: {e}")
         raise SystemExit(1)
@@ -109,7 +115,10 @@ if __name__ == "__main__":
             'requests',
             'jupyter',
             'ipykernel',
-            # ... other dependencies from your requirements.txt
+            'ipywidgets',
+            'pandas',
+            'numpy',
+            'matplotlib'
         ],
         entry_points={
             'console_scripts': [

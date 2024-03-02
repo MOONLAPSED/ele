@@ -51,8 +51,9 @@ def main():
         print("Failed to retrieve Lager() branch.")
         sys.exit(1)
     finally:
-     ml.info("passing lager object to main()")
-     sys.exit(0)
+        ml.info("passing lager object to main()")
+    return ml
+
 
 if __name__ == "__main__":
     try:

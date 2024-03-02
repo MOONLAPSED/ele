@@ -49,6 +49,7 @@ Ele is a data structure designed to represent and evolve concepts within NLP-pow
     - pip install open-interpreter
     - pip install litellm
     - pip install instructor
+    - pip install lit-llm
     - pip install errbot
     - errbot --init
     - errbot

@@ -1,18 +1,14 @@
 from pydantic import BaseModel, Field, validator
 from dataclasses import dataclass, field
+from datetime import datetime, date
 import os
 import subprocess
 from src.lager import Lager  # capital "L"
 import sys
 import uuid
-from main import rt_main
+from main import main
 
-app = rt_main()  # Use the pydantic app from setup.py
-
-
-
-
-
+ml = main()  # Use the pydantic app from setup.py
 
 @dataclass
 class SetupConfig:
@@ -38,30 +34,7 @@ class SetupConfig:
         os.environ['HASH'] = self.hash
 
         for e in str(self.sts_uid):
-            os.environ[f'UID_{e}'] = str(self.sts_uid)
-
-
-
-@app.on_event("startup")
-def run():
-    try:
-        pass
-    except:
-        pass
-    finally:
-        pass
-
-
-# +--------------------+
-
-@dataclass
-class SetupConfig:
-    project_root: str
-    log_dir: str
-    log_file: str
-    sts: frozenset  
-
-
+            print(f"{e.encode()} {os.environ[f'UID_{e}']} = {str(self.sts_uid)}")
 
 
 class BasedModel(BaseModel):
@@ -76,28 +49,11 @@ class BasedModel(BaseModel):
             self.required_date = datetime.now().date()
         except Exception as e:
             if e.__traceback__:
-                __log_error(f"Error initializing BasedModel: {e}", exc_info=True)
+                ml.error(f"Error initializing BasedModel: {e}", exc_info=True)
                 raise  # Re-raise the exception to halt execution
             else:
-                __log_error(f"Error initializing BasedModel: {e}")
+                ml.error(f"Error initializing BasedModel: {e}")
                 raise  # Re-raise the exception to halt execution
-        finally:  # default path with no exceptions
-            try:
-                # Call other methods or classes to get the required values
-                project_root, log_dir, log_file, sts = __mainpath()
-                appsettings = BasedModel()
-                appsettings.project_root = project_root
-                appsettings.log_dir = log_dir
-                appsettings.log_file = log_file
-                appsettings.sts = sts
-                
-            except Exception as e:
-                if e.__traceback__:
-                    __log_error(f"Error initializing BasedModel: {e}", exc_info=True)
-                    raise  # Re-raise the exception to halt execution
-                else:
-                    __log_error(f"Error initializing BasedModel: {e}")
-                    raise  # Re-raise the exception to halt execution
 
 
 def ValidateAppsettings(appsettings):
@@ -113,10 +69,15 @@ def ValidateAppsettings(appsettings):
         return True  # Return True if all validations pass
 
     except Exception as e:
-        __log_error(f"Error validating appsettings: {e}")
-        return False  # Return False if any validation fails
+        if e.__traceback__:
+            ml.error(f"Error validating appsettings: {e}", exc_info=True)
+            raise  # Re-raise the exception to halt execution
+        else:
+            ml.error(f"Error validating appsettings: {e}")
+            raise  # Re-raise the exception to halt execution
 
-def BasedSettings() -> tuple:
+
+def BasedSettings(SetupConfig) -> tuple:
     appsettings = main()  # wrapper for app / main()
     if ValidateAppsettings(appsettings):  # wrapper for validate_appsettings()
         print("Appsettings are valid")
@@ -136,17 +97,5 @@ def BasedApp():
         return 1
 
 
-
-
-
-@app.on_event("shutdown")
-def stop():
-    try:
-        pass
-    except:
-        pass
-    finally:
-        pass
-
 if __name__ == "__main__":
-    main_run()  # Call the run function from main.py
+    main()
