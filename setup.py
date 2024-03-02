@@ -1,9 +1,8 @@
-from datetime import datetime, date
-from setuptools import setup, find_packages
 import subprocess
 import os
 import sys
 import logging
+from setuptools import setup, find_packages
 import logging.config
 
 try:  # Configure setup logging
@@ -105,37 +104,25 @@ if __name__ == "__main__":
         logging.error(f"Error during setup: {e}")
         raise SystemExit(1)
 
-    setup(
-        name='ele',
-        version='1.0',
-        packages=find_packages(where='src', exclude=['opdb/*, logs/*, 2023dir/*, UFO/*, lit-llm/*']),
-        install_requires=[
-            'python-dotenv',
-            'pathlib',
-            'requests',
-            'jupyter',
-            'ipykernel',
-            'ipywidgets',
-            'pandas',
-            'numpy',
-            'matplotlib'
-        ],
-        entry_points={
-            'console_scripts': [
-                'ele = ele.src.app:run',
-            ]
-        }
-    )
-else:
-    try:
-        __starter()
-    except Exception as e:
-        if e.__traceback__:
-            logging.error(f"Error initializing .env: {e}", exc_info=True)
-            raise  # Re-raise the exception to halt execution
-        else:
-            logging.error(f"Error initializing .env: {e}")
-            raise  # Re-raise the exception to halt execution
-    finally:
-        __mainpath()
-        __pipenv()
+setup(
+    name='ele',
+    # Rest of the code...
+    version='1.0',
+    packages=find_packages(where='src', exclude=['opdb/*, logs/*, 2023dir/*, UFO/*, lit-llm/*']),
+    install_requires=[
+        'python-dotenv',
+        'pathlib',
+        'requests',
+        'jupyter',
+        'ipykernel',
+        'ipywidgets',
+        'pandas',
+        'numpy',
+        'matplotlib'
+    ],
+    entry_points={
+        'console_scripts': [
+            'ele = ele.src.app:run',
+        ]
+    }
+)
