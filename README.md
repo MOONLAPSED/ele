@@ -33,7 +33,7 @@ Ele is a data structure designed to represent and evolve concepts within NLP-pow
     - cd Desktop
     - .\"Miniforge Prompt.lnk"
     - conda create -n 3ten python=3.10
-    - cond init
+    - conda init
     - exit
     - cmd.exe (from inside windows terminal)
     - cd Desktop
@@ -51,6 +51,10 @@ Ele is a data structure designed to represent and evolve concepts within NLP-pow
     - pip install errbot
     - errbot --init
     - errbot
+        + Command names also support unix-style globs and can optionally be restricted to a specific plugin by prefixing the command with the name of a plugin, separated by a colon. 
+        + For example, Health:status will match the !status command of the Health plugin and Health:* will match all commands defined by the Health plugin.
+        + The first command match found will be used so if you have overlapping patterns you must used an OrderedDict instead of a regular dict.
+        + The !help command will list all commands and their descriptions.
 
 ### ::ele pseudo-markup+procedural_text+logic:
 

@@ -1,11 +1,46 @@
-import sys
+from pydantic import BaseModel, Field, validator
+from dataclasses import dataclass, field
+import os
 import subprocess
+from src.lager import Lager  # capital "L"
+import sys
+import uuid
+from main import rt_main
 
-from main import run as main_run, lager as main_lager  # Import the run function and lager from main.py
-from setup import main
+app = rt_main()  # Use the pydantic app from setup.py
 
-app = main()  # Use the pydantic app from setup.py
-lager = main_lager  # Use the lager from main.py
+
+
+
+
+
+@dataclass
+class SetupConfig:
+    project_root: str = os.getenv('PROJECT_ROOT')
+    log_dir: str = os.getenv('LOG_DIR')
+    log_file: str = os.getenv('LOG_FILE')
+    sts: os.stat_result = os.stat(os.getenv('PROJECT_ROOT'))
+    sts_uid: int = field(init=False)
+    hash_long: str = field(init=False)
+    hash: str = field(init=False)
+
+    def __post_init__(self):
+        self.sts_uid = self.sts.st_uid
+
+        try:
+            self.hash_long = hash()
+            self.hash = self.hash_long[:7]
+        except:
+            self.hash_long = None
+            self.hash = None
+
+        os.environ['HASH_LONG'] = self.hash_long
+        os.environ['HASH'] = self.hash
+
+        for e in str(self.sts_uid):
+            os.environ[f'UID_{e}'] = str(self.sts_uid)
+
+
 
 @app.on_event("startup")
 def run():
