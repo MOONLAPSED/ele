@@ -104,22 +104,18 @@ if __name__ == "__main__":
         logging.error(f"Error during setup: {e}")
         raise SystemExit(1)
 
+def read_requirements():
+    with open('requirements.txt') as req:
+        requirements = req.read().splitlines()
+    return requirements
+
 setup(
     name='ele',
     # Rest of the code...
     version='1.0',
     packages=find_packages(where='src', exclude=['opdb/*, logs/*, 2023dir/*, UFO/*, lit-llm/*']),
-    install_requires=[
-        'python-dotenv',
-        'pathlib',
-        'requests',
-        'jupyter',
-        'ipykernel',
-        'ipywidgets',
-        'pandas',
-        'numpy',
-        'matplotlib'
-    ],
+    install_requires=read_requirements(),  # corrected here
+    python_requires='>=3.10',
     entry_points={
         'console_scripts': [
             'ele = ele.src.app:run',
