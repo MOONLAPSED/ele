@@ -1,20 +1,21 @@
-# assume setup.py is in the same directory as src, __init__.py and src/__init__.py
-# assume setup.py has invoked ele/main.py (this script) amongst other things
+from pydantic import BaseModel, Field, validator
+from dataclasses import dataclass, field
 import os
-import sys
 import subprocess
 from src.lager import Lager  # capital "L"
-from setup import main
-app = main()  # Use the pydantic app from setup.py
-lager = None  # Use the lager from main.py
+import sys
+import uuid
 
-"""main handles setting launch and state environment variables and running the runtime of the working application."""
+app = None  # Use the pydantic app from main
+lager = None  # Use the lager from main
+
 
 def hash():
-    """hash retrieves the Git hash of the current commit."""
+    """hash retrieves the Git hash of the current commit and generates a random UUID for metadata."""
     try:
+        uid = uuid.uuid4()  # Generate a random UUID variable for versioning and seeding
         git_hash = subprocess.check_output(["git", "rev-parse", "--verify", "HEAD"]).decode().strip()
-        return git_hash
+        return uid, git_hash
 
     except subprocess.CalledProcessError as e:
         if "fatal: not a git repository" in e.output.decode():
@@ -23,11 +24,6 @@ def hash():
         else:
             raise  # Re-raise other Git errors for debugging
 
-@dataclass
-class SetupConfig:
-    project_root: str = os.getenv('PROJECT_ROOT')
-    log_dir: str = os.getenv('LOG_DIR')
-    log_file: str = os.getenv('LOG_FILE')
 
 def runtime():
     """runtime sets the environment variables and runs the application."""
@@ -51,11 +47,11 @@ def main():
     """main is the entry point for the application."""
     try:
         ml = runtime()
-        app.name = "ele"
     except:
         print("Failed to retrieve Lager() branch.")
         sys.exit(1)
     finally:
+     ml.info("passing lager object to main()")
      sys.exit(0)
 
 if __name__ == "__main__":
@@ -66,7 +62,9 @@ if __name__ == "__main__":
         sys.exit(1)
     except Exception as e:
         print(e)
+        raise  # Re-raise the exception to halt execution
     finally:
+        ml.info("main achieved runtime")
         try:  # UFO and lit-llm git clone
             subprocess.run('git submodule init')
             subprocess.run('git submodule update --recursive')
@@ -77,3 +75,5 @@ if __name__ == "__main__":
 else:
     print("You have no src directory so please run /ele/setup.py directly")
     sys.exit(1)
+
+

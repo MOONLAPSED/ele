@@ -52,8 +52,10 @@ Ele is a data structure designed to represent and evolve concepts within NLP-pow
     - pip install errbot
     - errbot --init
     - errbot
-        + outside virtual machine, we grant our boxy VM the ability to change its own git dir `git config --global --add safe.directory C:/Users/WDAGUtilityAccount/Desktop/`
-    
+        + Command names also support unix-style globs and can optionally be restricted to a specific plugin by prefixing the command with the name of a plugin, separated by a colon. 
+        + For example, Health:status will match the !status command of the Health plugin and Health:* will match all commands defined by the Health plugin.
+        + The first command match found will be used so if you have overlapping patterns you must used an OrderedDict instead of a regular dict.
+        + The !help command will list all commands and their descriptions.
 
 ### ::ele pseudo-markup+procedural_text+logic:
 
