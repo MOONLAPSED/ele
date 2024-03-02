@@ -27,6 +27,7 @@ def hash():
 
 def runtime():
     """runtime sets the environment variables and runs the application."""
+    global app, lager
     lager = Lager()
     lager.Lager.validate()  # Update and validate configuration
 
@@ -45,6 +46,7 @@ def runtime():
 
 def main():
     """main is the entry point for the application."""
+    global app, ml
     try:
         ml = runtime()
     except:
@@ -58,6 +60,7 @@ def main():
 if __name__ == "__main__":
     try:
         main()
+        ml.info("main achieved runtime")
     except ImportError:
         print("src not found, try reinstalling the package or running the setup.py script")
         sys.exit(1)
@@ -65,7 +68,6 @@ if __name__ == "__main__":
         print(e)
         raise  # Re-raise the exception to halt execution
     finally:
-        ml.info("main achieved runtime")
         try:  # UFO and lit-llm git clone
             subprocess.run('git submodule init')
             subprocess.run('git submodule update --recursive')

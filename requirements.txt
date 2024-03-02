@@ -8,10 +8,9 @@ jupyter
 ipykernel
 httpx
 click
-semantic-text-splitter
 nltk
 spacy
 ipywidgets
 pydantic
 uvicorn
-fastapi
+tablib
