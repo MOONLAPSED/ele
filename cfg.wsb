@@ -15,6 +15,11 @@
             <SandboxFolder>C:\Users\WDAGUtilityAccount\Desktop</SandboxFolder>
             <ReadOnly>false</ReadOnly>
         </MappedFolder>
+        <MappedFolder>
+            <HostFolder>D:\2023dir</HostFolder>
+            <SandboxFolder>C:\Users\WDAGUtilityAccount\Desktop\2023dir</SandboxFolder>
+            <ReadOnly>false</ReadOnly>
+        </MappedFolder>
     </MappedFolders>
     <LogonCommand>
         <Command>powershell.exe -ExecutionPolicy Bypass -Command "Invoke-Expression (New-Object System.Net.WebClient).DownloadString('https://get.scoop.sh')"</Command>

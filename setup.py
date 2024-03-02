@@ -220,7 +220,7 @@ if __name__ == "__main__":
     setup(
         name='ele',
         version='1.0',
-        packages=find_packages(where='src', exclude=['obs/*', 'fs/*']),
+        packages=find_packages(where='src', exclude=['opdb/*, logs/*, 2023dir/*, UFO/*, lit-llm/*']),
         install_requires=[
             'python-dotenv',
             'pathlib',
@@ -240,20 +240,9 @@ if __name__ == "__main__":
             ]
         }
     )
-    try:  # UFO and lit-llm git clone
-        subprocess.run('git submodule init')
-        subprocess.run('git submodule update --recursive')
-    except Exception as e:
-        if e.__traceback__:
-            __log_error(f"Error cloning UFO and lit-llm: {e}", exc_info=True)
-            raise  # Re-raise the exception to halt execution
-        else:
-            __log_error(f"Error cloning UFO and lit-llm: {e}")
-            raise  # Re-raise the exception to halt execution
 
     while BasedApp != 1:
         BasedApp()
-    
     if BasedApp == 1:
         __log_error(f"Error running based_app: {BasedApp}")
         raise ValueError(f"Error running based_app: {BasedApp}")

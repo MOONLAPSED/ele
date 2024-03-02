@@ -29,18 +29,28 @@ Ele is a data structure designed to represent and evolve concepts within NLP-pow
 * inside container; try `boxy.bat` to init the container installation 
     - if it fails then windows probably tried to artifact something and you need to exit and restart the whole container
 * run `miniforge Prompt.lnk` to open a conda environment 
-    - conda create -n 3ten python=3.10
-    - cmd.exe (if in terminal or powershell)
-    - conda activate 3ten
+    - 'windows-key' + type 'terminal', select windows terminal
     - cd Desktop
+    - .\"Miniforge Prompt.lnk"
+    - conda create -n 3ten python=3.10
+    - cond init
+    - exit
+    - cmd.exe (from inside windows terminal)
+    - cd Desktop
+    - .\"Miniforge Prompt.lnk"
+    - conda activate 3ten
+    - python.exe -m pip install --upgrade pip
     - pip install -r requirements.txt OR:
-        - to test setup.py:
-            Create a virtual environment: python -m venv test_env
-            
-            Activate it:
-            Windows: test_env\Scripts\activate/Linux/macOS: source test_env/bin/activate
-
-            Install package locally: python setup.py install
+    - to test setup.py:
+        Create a virtual environment: python -m venv test_env
+        Activate it: test_env\Scripts\activate
+        Install package locally: python setup.py install
+        pip install -r requirements.txt
+    - pip install open-interpreter
+    - pip install litellm
+    - pip install errbot
+    - errbot --init
+    - errbot
 
 ### ::ele pseudo-markup+procedural_text+logic:
 

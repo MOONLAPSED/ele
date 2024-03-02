@@ -12,3 +12,6 @@ semantic-text-splitter
 nltk
 spacy
 ipywidgets
+pydantic
+uvicorn
+fastapi

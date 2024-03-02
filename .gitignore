@@ -6,7 +6,16 @@ UFO/*
 /md/*
 *.log
 /logs/*
+/opdb/*
+/test_env/*
 /media/*
+
+# errbot
+/data/*
+config.py
+/plugins/*
+/ele.egg-info/*
+test_env/*
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

@@ -2,12 +2,15 @@
 # assume setup.py has invoked ele/main.py (this script) amongst other things
 import sys
 import subprocess
-from src.lager import Lager
-
+from src.lager import Lager  # capital "L"
+from setup import main
+app = main()  # Use the pydantic app from setup.py
+lager = None  # Use the lager from main.py
 
 """main handles setting launch and state environment variables and running the runtime of the working application."""
 
-def runtime(lager):
+def hash():
+    """hash retrieves the Git hash of the current commit."""
     try:
         git_hash = subprocess.check_output(["git", "rev-parse", "--verify", "HEAD"]).decode().strip()
         return git_hash
@@ -19,43 +22,51 @@ def runtime(lager):
         else:
             raise  # Re-raise other Git errors for debugging
 
-if __name__ == "__main__":
-    rt = None
+
+def runtime():
+    """runtime sets the environment variables and runs the application."""
+    lager = Lager()
+    lager.Lager.validate()  # Update and validate configuration
+    
     try:
-        if 'lager' not in locals():
-            lager = Lager()  # Create an instance of the logger
-        else:
-            lager = locals()['lager']  # Retrieve the logger instance from the locals() dictionary
-        rt = runtime(lager)  # Pass the logger instance to the runtime function
+        # Validate and retrieve a branch logger for main.py
+        ml = lager.Lager.branch_logger('main') # Retrieve a branch logger for main.py
+        return ml
+    except:
+        lager.Lager.error("Failed to retrieve Lager() branch.")
+        pass
+    finally:
+        ml.info("passing lager object to main()")
+        pass
+    return ml
 
-        if rt is not None:  # Check if Git info was retrieved
-            git_hash = rt
-        else:
-            git_hash = None
+def main():
+    """main is the entry point for the application."""
+    try:
+        ml = runtime()
+        app.name = "ele"
+    except:
+        print("Failed to retrieve Lager() branch.")
+        sys.exit(1)
+    finally:
+     sys.exit(0)
 
-        if rt is None:
-            lager.warning("Git initialization skipped in __main__")
-        
+if __name__ == "__main__":
+    try:
+        main()
     except ImportError:
         print("src not found, try reinstalling the package or running the setup.py script")
         sys.exit(1)
     except Exception as e:
         print(e)
     finally:
-        # ...
-        if rt is None:
-            stdout=subprocess.PIPE
-            stderr=subprocess.PIPE
-            if "fatal: not a git repository" in str(stdout):
-                print("fatal: not a git repository, now is your chance to ctrl+c because Ima chargin mah lazor!")
-                # git init functionality
-            else: # this is the default case
-                # async.wait loop for runtime's return value
-                # ...                
-                pass
-
-
-    sys.exit(0)
+        try:  # UFO and lit-llm git clone
+            subprocess.run('git submodule init')
+            subprocess.run('git submodule update --recursive')
+        except Exception as e:
+            print(e)
+            pass
+        sys.exit(0)
 else:
     print("You have no src directory so please run /ele/setup.py directly")
     sys.exit(1)
