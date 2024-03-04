@@ -2,7 +2,7 @@ import subprocess
 import os
 import sys
 import logging
-from setuptools import setup, find_packages
+from setuptools import setup
 import logging.config
 
 try:  # Configure setup logging
