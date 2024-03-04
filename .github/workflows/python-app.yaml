@@ -32,7 +32,10 @@ jobs:
           cd ${{ github.workspace }}
           pwd
           ls -la
-
+      - name: Create logs directory
+        run: mkdir -p logs
+      - name: Set permissions for logs directory
+        run: chmod -R 777 logs
       - name: Create log file
         run: touch logs/python-app.log
       - name: Upgrade pip
@@ -45,8 +48,8 @@ jobs:
           cd ${{ github.workspace }}
           python -m venv venv
           source venv/bin/activate
-          pip install -r requirements.txt 
-          python setup.py install
+          pip install .
+          python setup.py
 
       - name: Deactivate virtual environment
         run: deactivate
