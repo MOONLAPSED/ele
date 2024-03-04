@@ -44,7 +44,6 @@ def __mainpath() -> tuple:
     """Determines project paths, adjusts permissions, sets env variables."""
     project_root = os.path.abspath(os.path.dirname(__file__))
     os.environ['PROJECT_ROOT'] = project_root
-
     try:
         sts = os.stat(project_root)
         for root, dirs, files in os.walk(project_root):
@@ -112,7 +111,6 @@ def read_requirements():
 setup(
     name='ele',
     version='1.0',
-    install_requires=read_requirements(),
     python_requires='>=3.10',
     entry_points={
         'console_scripts': [

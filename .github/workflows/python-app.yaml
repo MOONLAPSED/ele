@@ -48,8 +48,7 @@ jobs:
           cd ${{ github.workspace }}
           python -m venv venv
           source venv/bin/activate
-          pip install .
-          python setup.py
+          python setup.py install
 
       - name: Deactivate virtual environment
         run: deactivate
