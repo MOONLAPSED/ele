@@ -60,4 +60,13 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: test-results
-          path: logs/python-app.log
+      - name: python-main
+        run: |
+          cd ${{ github.workspace }}
+          python -m venv venv
+          source venv/bin/activate
+          pwd >> logs/python-app.log
+          ls -la >> logs/python-app.log
+          python setup.py install -v >> logs/python-app.log 2>&1
+      - name: Deactivate virtual environment
+        run: deactivate >> logs/python-app.log 2>&1
