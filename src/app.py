@@ -8,9 +8,9 @@ from src.lager import Lager  # capital "L"
 import sys
 from tablib import Dataset
 import uuid
-from main import main
+from main import main as ml_main
 
-ml = main()
+ml = ml_main()
 ml.info("instantiated from main")
 load_dotenv()
 

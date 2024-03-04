@@ -111,10 +111,8 @@ def read_requirements():
 
 setup(
     name='ele',
-    # Rest of the code...
     version='1.0',
-    packages=find_packages(where='src', exclude=['opdb/*, logs/*, 2023dir/*, UFO/*, lit-llm/*']),
-    install_requires=read_requirements(),  # corrected here
+    install_requires=read_requirements(),
     python_requires='>=3.10',
     entry_points={
         'console_scripts': [
