@@ -42,31 +42,20 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install --upgrade setuptools
-    
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+      - name: Install necessary packages
+        run: |
+          apt-get update
+          apt-get install -y google-chrome-stable
       - name: python-main
         run: |
           cd ${{ github.workspace }}
-          python -m venv venv
-          source venv/bin/activate
-          pwd
-          ls -la
-          python setup.py install -v
-
-      - name: Deactivate virtual environment
-        run: deactivate
-
+          pwd >> logs/python-app.log
+          ls -la >> logs/python-app.log
+          python setup.py install -v >> logs/python-app.log 2>&1
       - name: Archive test output as artifact
         if: always()
         uses: actions/upload-artifact@v2
         with:
           name: test-results
-      - name: python-main
-        run: |
-          cd ${{ github.workspace }}
-          python -m venv venv
-          source venv/bin/activate
-          pwd >> logs/python-app.log
-          ls -la >> logs/python-app.log
-          python setup.py install -v >> logs/python-app.log 2>&1
-      - name: Deactivate virtual environment
-        run: deactivate >> logs/python-app.log 2>&1

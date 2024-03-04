@@ -1,1 +1,6 @@
-```
+```[INFO]2024-03-04~02:33:31-0600||root: passing lager object to main()
+[INFO]2024-03-04~02:35:46-0600||root: passing lager object to main()
+[INFO]2024-03-04~02:37:02-0600||root: passing lager object to main()
+[INFO]2024-03-04~02:39:00-0600||root.main: passing lager object to main()
+[INFO]2024-03-04~02:39:00-0600||root.main: passing lager object to main()
+[INFO]2024-03-04~02:39:00-0600||root.main: main achieved runtime

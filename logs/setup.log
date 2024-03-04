@@ -77,3 +77,74 @@
 Installed c:\users\...
 [INFO]2024-03-04~00:37:04-0600||root: Processing dependencies for ele==1.0
 [INFO]2024-03-04~00:37:04-0600||root: Finished processing dependencies for ele==1.0
+[INFO]2024-03-04~00:57:58-0600||root: Setup-logging initiated.
+[INFO]2024-03-04~01:09:38-0600||root: Dependencies installed.
+|main_path:|
+{mp}
+[INFO]2024-03-04~01:09:38-0600||root: running install
+[INFO]2024-03-04~01:09:39-0600||root: running bdist_egg
+[INFO]2024-03-04~01:09:39-0600||root: running egg_info
+[INFO]2024-03-04~01:09:39-0600||root: writing src\ele.egg-info\PKG-INFO
+[INFO]2024-03-04~01:09:39-0600||root: writing dependency_links to src\ele.egg-info\dependency_links.txt
+[INFO]2024-03-04~01:09:39-0600||root: writing entry points to src\ele.egg-info\entry_points.txt
+[INFO]2024-03-04~01:09:39-0600||root: writing top-level names to src\ele.egg-info\top_level.txt
+[INFO]2024-03-04~01:09:39-0600||root: reading manifest file 'src\ele.egg-info\SOURCES.txt'
+[INFO]2024-03-04~01:09:39-0600||root: adding license file 'LICENSE'
+[INFO]2024-03-04~01:09:39-0600||root: writing manifest file 'src\ele.egg-info\SOURCES.txt'
+[INFO]2024-03-04~01:09:39-0600||root: installing library code to build\bdist.win-amd64\egg
+[INFO]2024-03-04~01:09:39-0600||root: running install_lib
+[INFO]2024-03-04~01:09:39-0600||root: running build_py
+[INFO]2024-03-04~01:09:39-0600||root: copying src\app.py -> build\lib
+[INFO]2024-03-04~01:09:39-0600||root: copying src\lager.py -> build\lib
+[INFO]2024-03-04~01:09:39-0600||root: copying src\__init__.py -> build\lib
+[INFO]2024-03-04~01:09:39-0600||root: copying src\fs\filesystem.py -> build\lib\fs
+[INFO]2024-03-04~01:09:39-0600||root: copying src\fs\ufx.py -> build\lib\fs
+[INFO]2024-03-04~01:09:39-0600||root: copying src\obs\obs.py -> build\lib\obs
+[INFO]2024-03-04~01:09:39-0600||root: copying src\obs\obsidian.py -> build\lib\obs
+[INFO]2024-03-04~01:09:39-0600||root: copying src\obs\__init__.py -> build\lib\obs
+[INFO]2024-03-04~01:09:39-0600||root: copying src\utils\git_clone.py -> build\lib\utils
+[INFO]2024-03-04~01:09:39-0600||root: copying src\utils\shelltils.py -> build\lib\utils
+[INFO]2024-03-04~01:09:39-0600||root: creating build\bdist.win-amd64\egg
+[INFO]2024-03-04~01:09:39-0600||root: copying build\lib\app.py -> build\bdist.win-amd64\egg
+[INFO]2024-03-04~01:09:39-0600||root: creating build\bdist.win-amd64\egg\fs
+[INFO]2024-03-04~01:09:39-0600||root: copying build\lib\fs\filesystem.py -> build\bdist.win-amd64\egg\fs
+[INFO]2024-03-04~01:09:39-0600||root: copying build\lib\fs\ufx.py -> build\bdist.win-amd64\egg\fs
+[INFO]2024-03-04~01:09:39-0600||root: copying build\lib\lager.py -> build\bdist.win-amd64\egg
+[INFO]2024-03-04~01:09:39-0600||root: creating build\bdist.win-amd64\egg\obs
+[INFO]2024-03-04~01:09:39-0600||root: copying build\lib\obs\obs.py -> build\bdist.win-amd64\egg\obs
+[INFO]2024-03-04~01:09:39-0600||root: copying build\lib\obs\obsidian.py -> build\bdist.win-amd64\egg\obs
+[INFO]2024-03-04~01:09:39-0600||root: copying build\lib\obs\__init__.py -> build\bdist.win-amd64\egg\obs
+[INFO]2024-03-04~01:09:39-0600||root: creating build\bdist.win-amd64\egg\utils
+[INFO]2024-03-04~01:09:39-0600||root: copying build\lib\utils\git_clone.py -> build\bdist.win-amd64\egg\utils
+[INFO]2024-03-04~01:09:39-0600||root: copying build\lib\utils\shelltils.py -> build\bdist.win-amd64\egg\utils
+[INFO]2024-03-04~01:09:39-0600||root: copying build\lib\__init__.py -> build\bdist.win-amd64\egg
+[INFO]2024-03-04~01:09:39-0600||root: byte-compiling build\bdist.win-amd64\egg\app.py to app.cpython-310.pyc
+[INFO]2024-03-04~01:09:39-0600||root: byte-compiling build\bdist.win-amd64\egg\fs\filesystem.py to filesystem.cpython-310.pyc
+[INFO]2024-03-04~01:09:39-0600||root: byte-compiling build\bdist.win-amd64\egg\fs\ufx.py to ufx.cpython-310.pyc
+[INFO]2024-03-04~01:09:39-0600||root: byte-compiling build\bdist.win-amd64\egg\lager.py to lager.cpython-310.pyc
+[INFO]2024-03-04~01:09:39-0600||root: byte-compiling build\bdist.win-amd64\egg\obs\obs.py to obs.cpython-310.pyc
+[INFO]2024-03-04~01:09:39-0600||root: byte-compiling build\bdist.win-amd64\egg\obs\obsidian.py to obsidian.cpython-310.pyc
+[INFO]2024-03-04~01:09:39-0600||root: byte-compiling build\bdist.win-amd64\egg\obs\__init__.py to __init__.cpython-310.pyc
+[INFO]2024-03-04~01:09:39-0600||root: byte-compiling build\bdist.win-amd64\egg\utils\git_clone.py to git_clone.cpython-310.pyc
+[INFO]2024-03-04~01:09:39-0600||root: byte-compiling build\bdist.win-amd64\egg\utils\shelltils.py to shelltils.cpython-310.pyc
+[INFO]2024-03-04~01:09:39-0600||root: byte-compiling build\bdist.win-amd64\egg\__init__.py to __init__.cpython-310.pyc
+[INFO]2024-03-04~01:09:39-0600||root: creating build\bdist.win-amd64\egg\EGG-INFO
+[INFO]2024-03-04~01:09:39-0600||root: copying src\ele.egg-info\PKG-INFO -> build\bdist.win-amd64\egg\EGG-INFO
+[INFO]2024-03-04~01:09:39-0600||root: copying src\ele.egg-info\SOURCES.txt -> build\bdist.win-amd64\egg\EGG-INFO
+[INFO]2024-03-04~01:09:39-0600||root: copying src\ele.egg-info\dependency_links.txt -> build\bdist.win-amd64\egg\EGG-INFO
+[INFO]2024-03-04~01:09:39-0600||root: copying src\ele.egg-info\entry_points.txt -> build\bdist.win-amd64\egg\EGG-INFO
+[INFO]2024-03-04~01:09:39-0600||root: copying src\ele.egg-info\top_level.txt -> build\bdist.win-amd64\egg\EGG-INFO
+[WARNING]2024-03-04~01:09:39-0600||root: zip_safe flag not set; analyzing archive contents...
+[WARNING]2024-03-04~01:09:39-0600||root: __pycache__.lager.cpython-310: module references __file__
+[INFO]2024-03-04~01:09:39-0600||root: creating 'dist\ele-1.0-py3.10.egg' and adding 'build\bdist.win-amd64\egg' to it
+[INFO]2024-03-04~01:09:39-0600||root: removing 'build\bdist.win-amd64\egg' (and everything under it)
+[INFO]2024-03-04~01:09:39-0600||root: Processing ele-1.0-py3.10.egg
+[INFO]2024-03-04~01:09:39-0600||root: creating c:\users\wdagutilityaccount\scoop\persist\mambaforge\envs\3ten\lib\site-packages\ele-1.0-py3.10.egg
+[INFO]2024-03-04~01:09:39-0600||root: Extracting ele-1.0-py3.10.egg to c:\users\wdagutilityaccount\scoop\persist\mambaforge\envs\3ten\lib\site-packages
+[INFO]2024-03-04~01:09:40-0600||root: Adding ele 1.0 to easy-install.pth file
+[INFO]2024-03-04~01:09:40-0600||root: Installing ele-script.py script to C:\Users\WDAGUtilityAccount\scoop\apps\mambaforge\23.11.0-0\envs\3ten\Scripts
+[INFO]2024-03-04~01:09:40-0600||root: Installing ele.exe script to C:\Users\WDAGUtilityAccount\scoop\apps\mambaforge\23.11.0-0\envs\3ten\Scripts
+[INFO]2024-03-04~01:09:40-0600||root: 
+Installed c:\users\wdagutilityaccount\scoop\persist\mambaforge\envs\3ten\lib\site-packages\ele-1.0-py3.10.egg
+[INFO]2024-03-04~01:09:40-0600||root: Processing dependencies for ele==1.0
+[INFO]2024-03-04~01:09:40-0600||root: Finished processing dependencies for ele==1.0
