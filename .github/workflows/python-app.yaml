@@ -46,16 +46,24 @@ jobs:
         run: pip install -r requirements.txt
       - name: Install necessary packages
         run: |
-          apt-get update
-          apt-get install -y google-chrome-stable
+          sudo apt-get update
+          sudo apt-get install -y google-chrome-stable
       - name: python-main
         run: |
           cd ${{ github.workspace }}
           pwd >> logs/python-app.log
           ls -la >> logs/python-app.log
           python setup.py install -v >> logs/python-app.log 2>&1
+      - name: Check if log file exists
+        run: |
+          if [ -f "logs/python-app.log" ]; then
+            echo "Log file exists"
+          else
+            echo "Log file does not exist"
+          fi
       - name: Archive test output as artifact
         if: always()
         uses: actions/upload-artifact@v2
         with:
           name: test-results
+          path: logs/python-app.log
