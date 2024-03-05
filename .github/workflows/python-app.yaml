@@ -41,7 +41,7 @@ jobs:
           echo $PATH | tee -a logs/setup.log 2>&1
           echo $VIRTUAL_ENV | tee -a logs/setup.log 2>&1
           echo $PYTHONPATH | tee -a logs/setup.log 2>&1
-          echo |__ele__.main()| tee -a logs/setup.log 2>&1
+          echo __ele__.main() tee -a logs/setup.log 2>&1
       - name: Install dependencies and set up environment
         run: | 
             sudo apt-get update
@@ -57,7 +57,6 @@ jobs:
       - name: Run main python app
         run: |
           python main.py 2>&1 | tee -a logs/app.log logs/python-app.log
-          curl -i -X POST -H "Content-Type: application/json" -d 0.0.0.0 http://localhost:8080/api/v1/test/ >> logs/app.log 2>&1
       - name: Archive test output as artifact
         if: always()
         uses: actions/upload-artifact@v2
