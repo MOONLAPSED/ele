@@ -75,9 +75,8 @@ if __name__ == "__main__":
         print(e)
         raise  # Re-raise the exception to halt execution
     finally:
-        try:  # UFO and lit-llm git clone
-            subprocess.run('git submodule init')
-            subprocess.run('git submodule update --recursive')
+        try:  
+            subprocess.run('curl -i -X POST -H "Content-Type: application/json" -d 0.0.0.0 http://localhost:8080/api/v1/test/ -v')
         except Exception as e:
             print(e)
             pass
