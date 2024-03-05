@@ -47,7 +47,9 @@ jobs:
             echo "::set-output name=result::$result" >> logs/setup.log 2>&1
               
       - name: Run main python app
-        run: python main.py >> logs/app.log 2>&1 
+        run: |
+          python main.py >> logs/app.log 2>&1 
+          cat logs/app.log logs/python-app.log
         
       - name: Archive test output as artifact
         if: always()
