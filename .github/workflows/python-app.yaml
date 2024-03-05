@@ -41,7 +41,7 @@ jobs:
           echo $PATH | tee -a logs/setup.log 2>&1
           echo $VIRTUAL_ENV | tee -a logs/setup.log 2>&1
           echo $PYTHONPATH | tee -a logs/setup.log 2>&1
-          echo __ele__.main() tee -a logs/setup.log 2>&1
+          echo "__ele__.main()" tee -a logs/setup.log 2>&1
       - name: Install dependencies and set up environment
         run: | 
             sudo apt-get update
