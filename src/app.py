@@ -67,7 +67,26 @@ class BasedModel(BaseModel):
         self.git_tags = [t for t in self.git_tags if t != '']  # Remove empty strings
         self.git_tag_latest = self.git_tags[-1]  # Get the latest tag
         # self.git_tag_latest_short = self.git_tag_latest.split('-')[0]  # Get the short version of the latest tag
+#@app.on_event("startup")
+def run():
+    try:
+        pass
+    except:
+        pass
+    finally:
+        pass
 
+#@app.on_event("shutdown")
+def stop():
+    try:
+        pass
+    except:
+        pass
+    finally:
+        pass
+
+def main():
+    pass
 
 if __name__ == "__main__":
     main()
